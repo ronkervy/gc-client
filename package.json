@@ -1,0 +1,125 @@
+{
+  "name": "gc-client",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "license": "GNU",
+  "author": {
+    "name": "Ron kervy G. Palacay",
+    "email": "kervy00@gmail.com"
+  },
+  "dependencies": {
+    "@date-io/date-fns": "^1.3.13",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "*",
+    "@material-ui/pickers": "^3.3.10",
+    "@reduxjs/toolkit": "^1.5.1",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.21.1",
+    "date-fns": "^2.21.3",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-wix-msi": "^2.2.0",
+    "express": "^4.17.1",
+    "formik": "^2.2.6",
+    "framer-motion": "^4.1.11",
+    "node-ipc": "^9.1.4",
+    "pdfmake": "^0.1.71",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-number-format": "^4.5.5",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "socket.io-client": "^4.0.0",
+    "systeminformation": "^5.6.21",
+    "web-vitals": "^1.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:serve": "react-scripts build && electron-forge start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "package": "electron-forge package",
+    "serve": "electron-forge start",
+    "make": "electron-forge make"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "^12.0.6",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-forge": "^5.2.4",
+    "electron-reload": "^1.5.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "prune": true,
+        "asar": true,
+        "icon": "./app/logo.ico",
+        "ignore": [
+          "/msi",
+          "/out",
+          "/data",
+          ".gitignore",
+          "build_installer.js",
+          ".git",
+          "/node_modules/.cache",
+          "/node_modules/.bin"
+        ]
+      },
+      "electronRebuildConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "gc-react-app",
+            "description": "GC Software Application"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}
