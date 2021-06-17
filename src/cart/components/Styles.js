@@ -9,7 +9,7 @@ const useStyle = {
         borderRadius : '10px',
         padding : '20px',
         width : '400px',
-        height : '350px',
+        height : '400px',
         backgroundColor : "#ffffff",
         outline : 'none',
         position : 'relative'
