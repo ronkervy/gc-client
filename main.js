@@ -2,7 +2,7 @@ const { app,BrowserWindow,ipcMain } = require('electron');
 const ipc = require('node-ipc');
 const server = require('./app/index');
 if (require('electron-squirrel-startup')) return app.quit();
-const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+// const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 let win;
 
@@ -37,9 +37,9 @@ const createWindow = ()=>{
 }
 
 app.whenReady().then(()=>{
-    installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+    // installExtension(REDUX_DEVTOOLS)
+    // .then((name) => console.log(`Added Extension:  ${name}`))
+    // .catch((err) => console.log('An error occurred: ', err));
     createWindow()
 });
 
