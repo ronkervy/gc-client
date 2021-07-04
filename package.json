@@ -28,6 +28,7 @@
     "express": "^4.17.1",
     "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
+    "ip": "^1.1.5",
     "node-ipc": "^9.1.4",
     "pdfmake": "^0.1.71",
     "react": "^17.0.1",
@@ -96,6 +97,9 @@
           "/node_modules/.bin"
         ]
       },
+      "plugins" : [
+        
+      ],
       "electronRebuildConfig": {},
       "makers": [
         {
