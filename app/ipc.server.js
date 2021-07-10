@@ -1,7 +1,7 @@
 const ipc = require('node-ipc');
 const ip = require('ip');
 const name = ip.address().split('.')[3];
-const { exec } = require('child_process');
+const exec = require('child_process').exec;
 
 const execute = (cmd,cb)=>{
     exec(cmd,(error,stdout,stderr)=>{
@@ -38,7 +38,7 @@ ipc.serveNet(
             }
         );
 
-        ipc.server.broadcast(
+        ipc.server.emit(
             {
                 address : 'localhost',
                 port    : ipc.config.networkPort
