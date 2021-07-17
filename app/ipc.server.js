@@ -28,7 +28,7 @@ ipc.serveNet(
         );
 
         ipc.server.on(
-            'server-broadcast',
+            'ServerBroadcast',
             (data,socket)=>{
                 ipc.log('Server Replied : ', data.id ,' : ', data.message);     
                 execute(`setx REACT_APP_HOST "${data.ipadd}"`,(result)=>{
@@ -43,7 +43,7 @@ ipc.serveNet(
                 address : 'localhost',
                 port    : ipc.config.networkPort
             },
-            'find-server',
+            'FindServer',
             {
                 id      : ipc.config.id,
                 message : 'Hello'

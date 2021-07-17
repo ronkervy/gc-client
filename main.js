@@ -18,7 +18,6 @@ const createWindow = ()=>{
             nodeIntegration : true,
             contextIsolation: false,
             devTools : true,
-            preload : server
         },
         autoHideMenuBar : true,
         resizable : false,
