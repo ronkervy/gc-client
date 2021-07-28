@@ -34,10 +34,17 @@ const BtnGroupSingleTrans = (props)=>{
 
     const { data,fn } = props;
     const dispatch = useDispatch();
+    const { loading } = useSelector(state=>state.report);
     const [payment,setPayment] = useState({
         partial_payments : 0
     });
     const history = useHistory();
+
+    if( loading ){
+        return(
+            <Loader />
+        )
+    }
 
     return(
         <Grid item container lg={12} sm={12} spacing={2}>

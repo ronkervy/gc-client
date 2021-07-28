@@ -5,7 +5,7 @@ const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhos
 
 const ReportServices = axios.create({
     baseURL : `http://${host}:8081/api/v1/gc-print`,
-    timeout : 1000
+    timeout : 62 * 2 * 1000
 });
 
 const sleep = (x)=>{

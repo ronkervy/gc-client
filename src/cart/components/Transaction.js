@@ -10,7 +10,6 @@ import { CreateTransaction } from '../store/CartServices';
 import { OpenNotification } from '../../shared/store/NotificationSlice';
 import { cartLoading } from '../store/CartSlice';
 import Loader from '../../shared/components/Loader';
-import { getDocDef } from '../../transactions/store/TransactionServices';
 import { CreateTransactionReport } from '../../shared/store/ReportServices';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
@@ -41,21 +40,19 @@ function Transaction(props) {
                 url : '/transactions/' + transact_id
             }) );
     
-            if( getDocDef.fulfilled.match(resTrans) ){
+            if( CreateTransactionReport.fulfilled.match(resTrans) ){
                 const { doc,logo } = resTrans.payload;
                 let pdf = JSON.parse(doc);      
 
-                if( pdf.length > 0 ){
-                    const url = "";
+                if( pdf.length > 0 ){                    
                     pdfMake.vfs = pdfFonts.pdfMake.vfs;
                     const docDef = TransactionDocDef(pdf,logo);
                     const docGenerator = pdfMake.createPdf(docDef);
 
                     docGenerator.getBlob(blob=>{
-                        url = window.URL.createObjectURL(blob);                                                
-                    });
-
-                    history.push('/transaction/success?pdf=' + url +  "&page=transaction");
+                        let url = window.URL.createObjectURL(blob);                                                
+                        history.push('/transaction/success?pdf=' + url +  "&page=transaction");
+                    });                    
                 }else{
                     dispatch( OpenNotification({
                         message : 'No Transaction has been made.',

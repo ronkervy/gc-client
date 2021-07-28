@@ -5,7 +5,7 @@ const ReportSlice = createSlice({
     name : 'report',
     initialState : {
         doc : '',
-        loading : true,
+        loading : false,
         error : ''
     },
     reducers : {},
