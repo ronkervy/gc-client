@@ -4,6 +4,7 @@ import CartReducer from '../../cart/store/CartSlice';
 import NotificationReducer from './NotificationSlice';
 import TransactionReducer from '../../transactions/store/TransactionSlice';
 import ConnectionReducer from './ConnectionSlice';
+import ReportReducer from './ReportSlice';
 
 export default configureStore({
     reducer : {
@@ -11,6 +12,7 @@ export default configureStore({
         cart : CartReducer,
         notifications : NotificationReducer,
         transactions : TransactionReducer,
-        connection : ConnectionReducer,        
+        connection : ConnectionReducer,   
+        report : ReportReducer     
     }
 });

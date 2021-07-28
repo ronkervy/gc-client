@@ -11,6 +11,10 @@ import { OpenNotification } from '../../shared/store/NotificationSlice';
 import { cartLoading } from '../store/CartSlice';
 import Loader from '../../shared/components/Loader';
 import { getDocDef } from '../../transactions/store/TransactionServices';
+import { CreateTransactionReport } from '../../shared/store/ReportServices';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import TransactionDocDef from '../docs/TransactionDocDef';
 
 function Transaction(props) {
 
@@ -32,15 +36,32 @@ function Transaction(props) {
     const handleClose = async (id)=>{
         if( id.payload !== undefined ){
             const { transact_id } = id.payload;
-            const resTrans = await dispatch( getDocDef({
-                opt : {
-                    url : '/gc-print/transactions/' + transact_id
-                }
+            
+            const resTrans = await dispatch( CreateTransactionReport({
+                url : '/transactions/' + transact_id
             }) );
     
             if( getDocDef.fulfilled.match(resTrans) ){
-                let docDef = resTrans.payload;            
-                history.push('/transaction/success?pdf=' + docDef);            
+                const { doc,logo } = resTrans.payload;
+                let pdf = JSON.parse(doc);      
+
+                if( pdf.length > 0 ){
+                    const url = "";
+                    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                    const docDef = TransactionDocDef(pdf,logo);
+                    const docGenerator = pdfMake.createPdf(docDef);
+
+                    docGenerator.getBlob(blob=>{
+                        url = window.URL.createObjectURL(blob);                                                
+                    });
+
+                    history.push('/transaction/success?pdf=' + url +  "&page=transaction");
+                }else{
+                    dispatch( OpenNotification({
+                        message : 'No Transaction has been made.',
+                        severity : 'error'
+                    }) );
+                }   
             }else{
                 dispatch( OpenNotification({
                     message : 'Transaction Failed, Pls try again.',

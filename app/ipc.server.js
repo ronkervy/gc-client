@@ -38,7 +38,7 @@ ipc.serveNet(
             }
         );
 
-        ipc.server.emit(
+        ipc.server.broadcast(
             {
                 address : 'localhost',
                 port    : ipc.config.networkPort

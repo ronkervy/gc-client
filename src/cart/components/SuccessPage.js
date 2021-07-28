@@ -16,12 +16,11 @@ function SuccessPage(props) {
     const history = useHistory();
     const [open,setOpen] = useState(false);
     const { loading } = useSelector(state=>state.transactions);
+    const { loading : rptLoad } = useSelector(state=>state.report);
     const query = useQuery();
     const pdf = query.get('pdf');
     const page = query.get('page');
     const { classes } = props;
-
-    console.log(page);
 
     const handleClose = ()=>{
         
@@ -34,13 +33,11 @@ function SuccessPage(props) {
         setOpen(false);
     }
 
-    console.log(pdf);
-
     useEffect(()=>{
         setOpen(true);
     },[]);
 
-    if( loading ){
+    if( loading || rptLoad ){
         return(
             <Loader />
         )
