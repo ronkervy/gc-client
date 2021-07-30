@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 8082;
-const ipc = require('./ipc.server');
 
 app.use(express.static(path.join(__dirname,'../build')));
 app.use(express.json());
@@ -12,6 +11,4 @@ app.use('/',(req,res)=>{
     res.sendFile(__dirname,'/index.html');
 });
 
-app.listen(PORT,()=>{
-    ipc.server.start();
-});
+app.listen(PORT);

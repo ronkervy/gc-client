@@ -1,8 +1,9 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
-const ipc = require('node-ipc');
+const ipc = require('./app/ipc.server');
 const server = require('./app/index');
+const exec = require('child_process').exec;
 if (require('electron-squirrel-startup')) return app.quit();
-const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+// const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 let win;
 
@@ -35,11 +36,19 @@ const createWindow = ()=>{
     });
 }
 
+const execute = (cmd,cb)=>{
+    exec(cmd,(error,stdout,stderr)=>{
+        if(error) return cb(stderr);
+        return cb(stdout);
+    });
+}
+
 app.whenReady().then(()=>{
-    
-    installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+
+    // installExtension(REDUX_DEVTOOLS)
+    // .then((name) => console.log(`Added Extension:  ${name}`))
+    // .catch((err) => console.log('An error occurred: ', err));
+    ipc.server.start();
     createWindow()
 });
 

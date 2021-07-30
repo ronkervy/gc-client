@@ -27,7 +27,7 @@ function App(props) {
   }
 
   useEffect(()=>{
-      console.log(host);
+      console.log(process.env.NODE_ENV,process.env.REACT_APP_HOST);
 
       socket.emit('client',{
           name : "client"

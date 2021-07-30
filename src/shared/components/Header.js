@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setConnection } from '../store/ConnectionSlice';
 import { searchProduct, selectAllProducts } from '../../products/store/productServices';
 import { useHistory } from 'react-router';
+import ipc from 'node-ipc';
 
 function Header(props) {
 

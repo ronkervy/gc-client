@@ -19,34 +19,34 @@ ipc.serveNet(
     ()=>{
         ipc.server.on(
             'client-connected',
-            (data)=>{            
+            (data)=>{    
+                
                 execute(`setx REACT_APP_HOST "${data.ipadd}"`,(result)=>{
-                    ipc.log(data.ipadd,result);
                     ipc.log('got a message from ', data.ipadd ,' : ', data.message);
-                });                
+                    ipc.log(result);
+                })            
             }
         );
 
         ipc.server.on(
             'ServerBroadcast',
             (data,socket)=>{
-                ipc.log('Server Replied : ', data.id ,' : ', data.message);     
                 execute(`setx REACT_APP_HOST "${data.ipadd}"`,(result)=>{
-                    ipc.log(data.ipadd,result);
                     ipc.log('got a message from ', data.ipadd ,' : ', data.message);
-                });  
+                    ipc.log(result);
+                }) 
             }
         );
 
-        ipc.server.broadcast(
+        ipc.server.emit(
             {
-                address : 'localhost',
-                port    : ipc.config.networkPort
+                address : ipc.config.networkHost,
+                port : 8001
             },
             'FindServer',
             {
                 id      : ipc.config.id,
-                message : 'Hello'
+                message : 'Client send @ ' + new Date(Date.now()).toISOString().split('T')[0]
             }
         );
     }
