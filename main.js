@@ -44,7 +44,6 @@ const execute = (cmd,cb)=>{
 }
 
 app.whenReady().then(()=>{
-
     // installExtension(REDUX_DEVTOOLS)
     // .then((name) => console.log(`Added Extension:  ${name}`))
     // .catch((err) => console.log('An error occurred: ', err));
