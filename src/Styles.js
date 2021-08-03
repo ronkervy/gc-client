@@ -7,7 +7,8 @@ const useStyles = {
                 height : '100%',
             },
             overflow : 'hidden',
-            position : 'relative'
+            position : 'relative',
+            borderRadius : "15px"
         },
         html : {
             height : '95%',

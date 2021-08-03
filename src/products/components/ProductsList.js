@@ -16,8 +16,7 @@ function ProductsList() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(8);
 
-    const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
-    const socket = io(`http://${host}:8081`);
+    const { ipcRenderer } = window.require('electron');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -28,23 +27,33 @@ function ProductsList() {
         setPage(0);
     };
 
-    useEffect(()=>{
-        
-        socket.on("connect",()=>{
-            if( products.length == 0 ){
-                dispatch( selectAllProducts({
-                    opt : {
-                        url : '/products'
-                    }
-                }) );
-            }     
+    const socketCon = ()=>{
+        ipcRenderer.on('get-ip',(e,args)=>{
+            const host = args.address ? args.address : 'localhost';
+            const socket = io(`http://${host}:8081`);
+
+            socket.on("connect",()=>{
+                if( products.length == 0 ){
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }) );
+                }     
+            });
         });
+    }
+
+    useEffect(()=>{
+
+        socketCon();
 
         dispatch( selectAllProducts({
             opt : {
                 url : '/products'
             }
         }) );
+
     },[]);
 
     if( loading ){

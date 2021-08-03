@@ -1,11 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
+const { ipcRenderer } = window.require('electron');
+let ReportServices;
 
-const ReportServices = axios.create({
-    baseURL : `http://${host}:8081/api/v1/gc-print`,
-    timeout : 62 * 2 * 1000
+ipcRenderer.on('get-ip',(e,args)=>{
+    const host = args.address ? args.address : 'localhost';
+    ReportServices = axios.create({
+        baseURL : `http://${host}:8081/api/v1/gc-print`,
+        timeout : 62 * 2 * 1000
+    });
 });
 
 const sleep = (x)=>{

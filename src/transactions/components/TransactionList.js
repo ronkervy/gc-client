@@ -41,7 +41,7 @@ const TransitionDialog = forwardRef((props,ref)=>{
         <Slide 
             direction="up"
             ref={ref}
-            {...props}
+            {...props}            
         />
     )
 });
@@ -109,8 +109,17 @@ function TransactionList(props) {
             open={open}
             onClose={handleClose}
             TransitionComponent={TransitionDialog}
+            BackdropProps={{
+                style : {
+                    height : "730px",
+                    borderRadius : "15px"
+                }
+            }}
             style={{
-                WebkitAppRegion : "no-drag"
+                WebkitAppRegion : "no-drag",
+                padding : "20px",
+                height : "690px",
+                borderRadius : "10px"
             }}
         >   
             <AppBar className={classes.appBar}>
@@ -193,7 +202,7 @@ function TransactionList(props) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {transactions.map(entry=>(
+                                {transactions.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(entry=>(
                                     <TransactionItems transaction={entry} />
                                 ))}
                             </TableBody>

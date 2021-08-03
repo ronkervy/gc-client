@@ -18,20 +18,28 @@ function App(props) {
 
   const dispatch = useDispatch();
   const { root,ContainerWrap } = props.classes;
-  const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
-  const socket = io(`http://${host}:8081`);
+  const { ipcRenderer } = window.require('electron');
   const searchRef = useRef(null);
 
   const focusSearch = ()=>{
       searchRef.current.focus();
   }
 
-  useEffect(()=>{
-      console.log(process.env.NODE_ENV,process.env.REACT_APP_HOST);
+  const socketCon = ()=>{
+    ipcRenderer.on('get-ip',(e,args)=>{
+        const host = args.address ? args.address : 'localhost';
+        const socket = io(`http://${host}:8081`);
 
-      socket.emit('client',{
-          name : "client"
-      });
+        socket.emit('client',{
+            name : "client"
+        });
+  });
+
+  }
+
+  useEffect(()=>{
+
+      socketCon();  
 
       document.addEventListener('keydown',(e)=>{
           if( e.ctrlKey && e.key == 'f' ){

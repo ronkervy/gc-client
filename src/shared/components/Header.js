@@ -10,15 +10,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setConnection } from '../store/ConnectionSlice';
 import { searchProduct, selectAllProducts } from '../../products/store/productServices';
 import { useHistory } from 'react-router';
-import ipc from 'node-ipc';
 
 function Header(props) {
 
     const { ipcRenderer } = window.require('electron');
     const { searchRef } = props;
     const { HeaderWrap } = props.classes;
-    const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
-    const socket = io(`http://${host}:8081`);
+
+
     const dispatch = useDispatch();
     const { isConnected : connection } = useSelector(state=>state.connection);
     const history = useHistory();
@@ -31,15 +30,28 @@ function Header(props) {
         ipcRenderer.invoke('min');
     }
 
+    const socketCon = ()=>{
+        ipcRenderer.on('get-ip',(e,args)=>{
+
+            console.log(args);
+
+            const host = args.address ? args.address : 'localhost';
+            const socket = io(`http://${host}:8081`);
+    
+            socket.on('connect',()=>{
+                dispatch( setConnection(socket.connected) );
+            });
+    
+            socket.on('disconnect',()=>{
+                dispatch( setConnection(socket.connected) );
+            });
+
+        });
+    }
+
     useEffect(()=>{
 
-        socket.on('connect',()=>{
-            dispatch( setConnection(socket.connected) );
-        });
-
-        socket.on('disconnect',()=>{
-            dispatch( setConnection(socket.connected) );
-        });
+        socketCon();
 
     },[]);
 

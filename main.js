@@ -1,13 +1,17 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
-const ipc = require('./app/ipc.server');
 const server = require('./app/index');
 const exec = require('child_process').exec;
+const config = require('electron-node-config');
+
 if (require('electron-squirrel-startup')) return app.quit();
 // const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
-let win;
+let win,splashscreen;
+
+let ipadd = config.get('settings');
 
 const createWindow = ()=>{
+
     win = new BrowserWindow({
         width : 1024,  
         height : 750,
@@ -23,17 +27,48 @@ const createWindow = ()=>{
         autoHideMenuBar : true,
         resizable : false,
         frame : false,
+        show : false
     });
+
+    splashscreen = new BrowserWindow({
+        width : 450,
+        height : 350,
+        hasShadow : true,
+        alwaysOnTop : true,
+        frame : false,
+        transparent : true,
+        resizable : false
+    });
+    
+    splashscreen.loadURL('http://localhost:8082/api/loader');
 
     win.loadURL('http://localhost:8082');
 
-    win.once('ready-to-show', () => {
-        win.show()
-    })
+    win.once('ready-to-show', () => {    
+        setTimeout(()=>{
+            splashscreen.hide();  
+            splashscreen.close();
+            splashscreen = null;            
+        },4000);
+        
+        setTimeout(()=>{
+            win.show();
+        },5000);
+    });
+
+    win.webContents.on('dom-ready',()=>{
+        win.webContents.send('get-ip',ipadd);        
+    },);
+
+    win.on('show',()=>{
+        win.minimize();
+        win.focus();
+    });
 
     win.on('closed',()=>{
         win = null;
     });
+    
 }
 
 const execute = (cmd,cb)=>{
@@ -44,10 +79,10 @@ const execute = (cmd,cb)=>{
 }
 
 app.whenReady().then(()=>{
+
     // installExtension(REDUX_DEVTOOLS)
     // .then((name) => console.log(`Added Extension:  ${name}`))
     // .catch((err) => console.log('An error occurred: ', err));
-    ipc.server.start();
     createWindow()
 });
 
@@ -57,11 +92,11 @@ app.on('window-all-closed',()=>{
     }
 });
 
-app.on('activate',()=>{
-    if( BrowserWindow.getAllWindows().length === 0 || win === null ){
-        createWindow();
-    }
-});
+// app.on('activate',()=>{
+//     if( BrowserWindow.getAllWindows().length === 0 || win === null ){
+//         createWindow();
+//     }
+// });
 
 ipcMain.handle('close',(e, args)=>{
     app.quit()

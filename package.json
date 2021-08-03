@@ -22,15 +22,22 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
+    "config": "^1.26.1",
+    "cson": "^7.20.0",
     "date-fns": "^2.21.3",
+    "electron-node-config": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-wix-msi": "^2.2.0",
     "express": "^4.17.1",
     "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
+    "hjson": "^3.2.2",
+    "install": "^0.13.0",
     "ip": "^1.1.5",
     "node-ipc": "^9.1.4",
+    "npm": "^7.20.3",
     "pdfmake": "^0.1.71",
+    "properties": "^1.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-number-format": "^4.5.5",
@@ -39,7 +46,9 @@
     "react-scripts": "4.0.3",
     "socket.io-client": "^4.0.0",
     "systeminformation": "^5.6.21",
-    "web-vitals": "^1.1.0"
+    "toml": "^3.0.0",
+    "web-vitals": "^1.1.0",
+    "x2js": "^3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -85,7 +94,9 @@
     "forge": {
       "packagerConfig": {
         "prune": true,
-        "asar": true,
+        "asar": {
+            "unpack" : "**/app/config/*"
+        }, 
         "icon": "./app/logo.ico",
         "ignore": [
           "/msi",
@@ -95,8 +106,10 @@
           "build_installer.js",
           ".git",
           "/node_modules/.cache",
-          "/node_modules/.bin"
-        ]
+          "/node_modules/.bin",
+          "move-config.js"
+        ],
+        "overwrite" : true
       },
       "plugins": [],
       "electronRebuildConfig": {},

@@ -1,11 +1,16 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
+const { ipcRenderer } = window.require('electron');
 
-const CartService = axios.create({
-    baseURL : `http://${host}:8081/api/v1`,
-    timeout : 1000
+let CartService;
+
+ipcRenderer.on('get-ip',(e,args)=>{
+    const host = args.address ? args.address : 'localhost';
+    CartService = axios.create({
+        baseURL : `http://${host}:8081/api/v1`,
+        timeout : 1000
+    });
 });
 
 const sleep = (x)=>{
