@@ -56,7 +56,7 @@ const createWindow = ()=>{
         },5000);
     });
 
-    win.webContents.on('dom-ready',()=>{
+    win.webContents.on('did-finish-load',()=>{
         win.webContents.send('get-ip',ipadd);        
     },);
 
@@ -71,15 +71,11 @@ const createWindow = ()=>{
     
 }
 
-const execute = (cmd,cb)=>{
-    exec(cmd,(error,stdout,stderr)=>{
-        if(error) return cb(stderr);
-        return cb(stdout);
-    });
-}
+app.on('before-quit',(e)=>{
+    console.trace(e);
+});
 
 app.whenReady().then(()=>{
-
     // installExtension(REDUX_DEVTOOLS)
     // .then((name) => console.log(`Added Extension:  ${name}`))
     // .catch((err) => console.log('An error occurred: ', err));
@@ -92,11 +88,16 @@ app.on('window-all-closed',()=>{
     }
 });
 
-// app.on('activate',()=>{
-//     if( BrowserWindow.getAllWindows().length === 0 || win === null ){
-//         createWindow();
-//     }
-// });
+app.on('activate',()=>{
+    if( BrowserWindow.getAllWindows().length === 0 || win === null ){
+        createWindow();
+    }
+});
+
+ipcMain.handle('restart',()=>{
+    app.relaunch();
+    app.quit();
+});
 
 ipcMain.handle('close',(e, args)=>{
     app.quit()

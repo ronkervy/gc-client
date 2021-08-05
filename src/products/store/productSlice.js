@@ -9,11 +9,15 @@ const productsAdapter = createEntityAdapter({
 const productSlice = createSlice({
     name : 'products',
     initialState : productsAdapter.getInitialState({
-        loading : true,
+        loading : false,
         selectedProd : [],
         error : null,
     }),
-    reducers : {},
+    reducers : {
+        clearProducts : state=>{
+            state.entities = [];
+        }
+    },
     extraReducers : (builder)=>{
         //FETCH ALL PRODUCTS
         builder.addCase(selectAllProducts.pending,state=>{
@@ -24,7 +28,7 @@ const productSlice = createSlice({
             productsAdapter.setAll(state,payload);
         })
         .addCase(selectAllProducts.rejected,(state,{payload})=>{
-            state.loading = false;                
+            state.loading = false;            
             state.error = payload;
         })
         //FIND PRODUCT/S
@@ -64,5 +68,6 @@ export const loadingSelector = createDraftSafeSelector(
     state=>state.loading
 );
 
+export const { clearProducts } = productSlice.actions;
 export const productsSelector = productsAdapter.getSelectors(state=>state.products);
 export default productSlice.reducer;

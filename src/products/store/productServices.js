@@ -1,17 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { GetSettings } from '../../settings/store/SettingsServices';
 
-const { ipcRenderer } = window.require('electron');
-let ProdServices;
 
-ipcRenderer.on('get-ip',(e,args)=>{
-    const host = args.address ? args.address : 'localhost';
-    
-    ProdServices = axios.create({
-        baseURL : `http://${host}:8081/api/v1`,
-        timeout : 1000
-    });
-
+const ProdServices = axios.create({
+    timeout : 1000 * 2 * 60
 });
 
 const sleep = (x)=>{
@@ -20,15 +13,24 @@ const sleep = (x)=>{
 
 export const selectAllProducts = createAsyncThunk(
     'products/selectAllProducts',
-    async( args ,{ rejectWithValue })=>{
-        const { opt } = args;
+    async( args ,{ rejectWithValue,dispatch })=>{        
         try{
-            const res = await ProdServices({
-                ...opt,
-                method : "GET"
-            });
-            await sleep(2000);
-            return res.data;
+            const resSettings = await dispatch( GetSettings({
+                url : "/settings"
+            }) );
+
+            if(GetSettings.fulfilled.match(resSettings)){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : undefined;
+                const { opt } = args;
+                const res = await ProdServices({
+                    baseURL : `http://${host}:8081/api/v1`,
+                    ...opt,                
+                    method : "GET"
+                });
+                await sleep(2000);
+                return res.data;
+            }
         }catch(err){    
             return rejectWithValue(err.response.data);
         }
@@ -37,15 +39,25 @@ export const selectAllProducts = createAsyncThunk(
 
 export const searchProduct = createAsyncThunk(
     'products/searchProduct',
-    async(args,{rejectWithValue})=>{
+    async(args,{rejectWithValue,dispatch})=>{
         try{
-            const { opt,value } = args;
-            const res = await ProdServices({
-                ...opt,
-                method : 'GET'
-            });
-            await sleep(2000);
-            return res.data;
+            const resSettings = await dispatch( GetSettings({
+                url : "/settings"
+            }) );
+
+            if(GetSettings.fulfilled.match(resSettings)){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : undefined;
+                const { opt } = args;
+                const res = await ProdServices({
+                    baseURL : `http://${host}:8081/api/v1`,
+                    ...opt,                
+                    method : 'GET'
+                });
+                await sleep(2000);
+                return res.data;
+            }
+                    
         }catch(err){
             return rejectWithValue(err.response.data);
         }
@@ -54,13 +66,23 @@ export const searchProduct = createAsyncThunk(
 
 export const selectSingleProduct = createAsyncThunk(
     'products/selectSingleProduct',
-    async(id,{rejectWithValue})=>{
+    async(id,{rejectWithValue,dispatch})=>{
         try{
-            const res = await ProdServices({
-                method : 'GET',
-                url : '/products/' + id
-            });
-            return res.data;
+
+            const resSettings = await dispatch( GetSettings({
+                url : "/settings"
+            }) );
+
+            if(GetSettings.fulfilled.match(resSettings)){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : undefined;
+                const res = await ProdServices({
+                    baseURL : `http://${host}:8081/api/v1`,
+                    method : 'GET',
+                    url : '/products/' + id
+                });
+                return res.data;  
+            }         
         }catch(err){
             return rejectWithValue(err.response.data);
         }
@@ -69,14 +91,24 @@ export const selectSingleProduct = createAsyncThunk(
 
 export const createTransaction = createAsyncThunk(
     'products/createTransaction',
-    async( values,{rejectWithValue} )=>{
+    async( values,{rejectWithValue,dispatch} )=>{
         try{
-            const res = await ProdServices({
-                method : 'POST',
-                url : '/products',
-                data : values
-            });
-            return res.data;
+            
+            const resSettings = await dispatch( GetSettings({
+                url : "/settings"
+            }) );
+
+            if(GetSettings.fulfilled.match(resSettings)){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : undefined;              
+                const res = await ProdServices({
+                    baseURL : `http://${host}:8081/api/v1`,
+                    method : 'POST',
+                    url : '/products',
+                    data : values
+                });
+                return res.data; 
+            }          
         }catch(err){
             return rejectWithValue(err.response.data);
         }

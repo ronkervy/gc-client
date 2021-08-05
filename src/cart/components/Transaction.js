@@ -65,10 +65,10 @@ function Transaction(props) {
                     severity : 'error'
                 }) );
             }
-        }else{
-            history.goBack();
-        }    
-        setOpen(false);
+        }else{            
+            await history.goBack();
+        }      
+        setOpen(false);      
     }
 
     useEffect(()=>{
@@ -283,7 +283,7 @@ function Transaction(props) {
                                                     total_amount : total,
                                                     cash_amount : info.cash_amount,
                                                     change_amount : info.cash_amount - total,
-                                                    transact_payment_type : info.transact_payment_type,
+                                                    transact_payment_type : info.transact_payment_type === '' ? (info.cash_amount >= total ? 'full' : 'partial') : info.transact_payment_type,
                                                     transact_status : info.transact_payment_type === 'full' ? true : false
                                                 }
                                             })
@@ -296,6 +296,7 @@ function Transaction(props) {
                                                 message : 'Error : ' + resTrans.payload,
                                                 severity : 'error'
                                             }) );
+                                            handleClose();
                                         }
                                     }}
                                 >

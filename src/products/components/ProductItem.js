@@ -2,7 +2,7 @@ import { faBox, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../cart/store/CartSlice';
 
 function ProductItem({item}) {

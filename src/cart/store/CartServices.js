@@ -1,16 +1,10 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { GetSettings } from '../../settings/store/SettingsServices';
 
-const { ipcRenderer } = window.require('electron');
 
-let CartService;
-
-ipcRenderer.on('get-ip',(e,args)=>{
-    const host = args.address ? args.address : 'localhost';
-    CartService = axios.create({
-        baseURL : `http://${host}:8081/api/v1`,
-        timeout : 1000
-    });
+const CartService = axios.create({
+    timeout : 1000
 });
 
 const sleep = (x)=>{
@@ -19,16 +13,26 @@ const sleep = (x)=>{
 
 export const CreateTransaction = createAsyncThunk(
     'cart/CreateTransaction',
-    async(args,{rejectWithValue})=>{        
+    async(args,{rejectWithValue,dispatch})=>{        
         try{
-            const { values } = args;
-            const res = await CartService({
-                url : '/transactions',
-                method : 'POST',
-                data : values
-            });
-            await sleep(2000);
-            return res.data;
+
+            const resSettings = await dispatch( GetSettings({
+                url : "/settings"
+            }) );
+
+            if(GetSettings.fulfilled.match(resSettings)){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : undefined;
+                const { values } = args;
+                const res = await CartService({
+                    baseURL : `http://${host}:8081/api/v1`,
+                    url : '/transactions',
+                    method : 'POST',
+                    data : values
+                });
+                await sleep(2000);
+                return res.data;             
+            }             
         }catch(err){
             return rejectWithValue(err.response.data);
         }

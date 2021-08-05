@@ -1,8 +1,9 @@
 {
   "settings": {
-    "address": "192.168.1.5",
+    "port": "",
     "theme": {
       "darkmode": false
-    }
+    },
+    "address": "192.168.1.5"
   }
 }

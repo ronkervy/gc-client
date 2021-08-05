@@ -5,9 +5,11 @@ import NotificationReducer from './NotificationSlice';
 import TransactionReducer from '../../transactions/store/TransactionSlice';
 import ConnectionReducer from './ConnectionSlice';
 import ReportReducer from './ReportSlice';
+import SettingsReducer from '../../settings/store/SettingsSlice';
 
 export default configureStore({
     reducer : {
+        settings : SettingsReducer,
         products : ProductReducers,
         cart : CartReducer,
         notifications : NotificationReducer,

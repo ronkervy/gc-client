@@ -2,44 +2,28 @@ import React,{useEffect,useRef} from 'react';
 import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard/Index';
 import ProductsList from './products/components/ProductsList';
-import { io } from 'socket.io-client';
 import { Grid, withStyles } from '@material-ui/core';
 import useStyles from './Styles';
 import Toast from './shared/components/Toast';
 import { useDispatch } from 'react-redux';
 import { CloseNotification } from './shared/store/NotificationSlice';
-import PrintTransaction from './cart/components/PrintTransaction';
 import Transaction from './cart/components/Transaction';
 import Header from './shared/components/Header';
 import TransactionList from './transactions/components/TransactionList';
 import SuccessPage from './cart/components/SuccessPage';
+import Settings from './settings/components/settings';
 
 function App(props) {
 
   const dispatch = useDispatch();
   const { root,ContainerWrap } = props.classes;
-  const { ipcRenderer } = window.require('electron');
   const searchRef = useRef(null);
 
   const focusSearch = ()=>{
       searchRef.current.focus();
   }
 
-  const socketCon = ()=>{
-    ipcRenderer.on('get-ip',(e,args)=>{
-        const host = args.address ? args.address : 'localhost';
-        const socket = io(`http://${host}:8081`);
-
-        socket.emit('client',{
-            name : "client"
-        });
-  });
-
-  }
-
   useEffect(()=>{
-
-      socketCon();  
 
       document.addEventListener('keydown',(e)=>{
           if( e.ctrlKey && e.key == 'f' ){
@@ -53,7 +37,7 @@ function App(props) {
                 focusSearch();
             }
         });
-      }
+      }      
 
   },[]);
 
@@ -73,9 +57,6 @@ function App(props) {
                 <Route exact path="/products" >
                     <ProductsList />
                 </Route>
-                <Route exact path="/print" >
-                    <PrintTransaction />
-                </Route>
                 <Route exact path="/transaction">
                     <Transaction />
                 </Route>
@@ -84,6 +65,9 @@ function App(props) {
                 </Route>
                 <Route exact path="/translist">
                     <TransactionList />
+                </Route>
+                <Route exact path="/settings" >
+                    <Settings />
                 </Route>
             </Switch>
             <Toast

@@ -3,20 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../shared/components/Loader';
 import { selectAllProducts } from '../store/productServices';
-import { loadingSelector, productsSelector } from '../store/productSlice';
+import { clearProducts, loadingSelector, productsSelector } from '../store/productSlice';
 import ProductItem from './ProductItem';
-import { io } from 'socket.io-client';
-
 
 function ProductsList() {
 
     const dispatch = useDispatch();
     const products = useSelector(productsSelector.selectAll);
+    const { loading : settingsLoading } = useSelector(state=>state.settings);
+    const { isConnected : connection } = useSelector(state=>state.connection);
     const loading = useSelector(loadingSelector);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(8);
-
-    const { ipcRenderer } = window.require('electron');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -27,26 +25,7 @@ function ProductsList() {
         setPage(0);
     };
 
-    const socketCon = ()=>{
-        ipcRenderer.on('get-ip',(e,args)=>{
-            const host = args.address ? args.address : 'localhost';
-            const socket = io(`http://${host}:8081`);
-
-            socket.on("connect",()=>{
-                if( products.length == 0 ){
-                    dispatch( selectAllProducts({
-                        opt : {
-                            url : '/products'
-                        }
-                    }) );
-                }     
-            });
-        });
-    }
-
     useEffect(()=>{
-
-        socketCon();
 
         dispatch( selectAllProducts({
             opt : {
@@ -56,7 +35,15 @@ function ProductsList() {
 
     },[]);
 
-    if( loading ){
+    useEffect(()=>{
+        dispatch( selectAllProducts({
+            opt : {
+                url : '/products'
+            }
+        }) );
+    },[connection]);
+
+    if( loading || settingsLoading ){
         return(
             <Loader />
         )

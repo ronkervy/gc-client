@@ -15,4 +15,18 @@ app.use('/',(req,res)=>{
     res.sendFile(__dirname,'/index.html');
 });
 
+app.use((req,res,next)=>{
+    next(createHttpError.NotFound());
+});
+
+app.use((err,req,res,next)=>{
+    res.status(err.status || 500);
+    res.json({
+        error : {
+            status : err.status,
+            message : err.message
+        }
+    });
+});
+
 app.listen(PORT);

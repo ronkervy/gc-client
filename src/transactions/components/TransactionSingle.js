@@ -38,6 +38,7 @@ const BtnGroupSingleTrans = (props)=>{
     const [payment,setPayment] = useState({
         partial_payments : 0
     });
+    
     const history = useHistory();
 
     if( loading ){
@@ -182,7 +183,6 @@ const BtnGroupSingleTrans = (props)=>{
 function TransactionSingle(props) {
 
     const { inOpen,onClose,data : transaction } = props;
-    
     const { loading } = useSelector(state=>state.transactions);
     const classes = useStyles();
 
@@ -198,7 +198,11 @@ function TransactionSingle(props) {
             onClose={onClose}
             BackdropComponent={Backdrop}
             BackdropProps={{
-                timeout : 500
+                timeout : 500,
+                style : {
+                    height : "730px",
+                    borderRadius : "15px"
+                }
             }}
             className={classes.Modal}
         >

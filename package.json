@@ -32,6 +32,7 @@
     "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
     "hjson": "^3.2.2",
+    "http-errors": "^1.7.2",
     "install": "^0.13.0",
     "ip": "^1.1.5",
     "node-ipc": "^9.1.4",
@@ -52,6 +53,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:inspect": "electron-forge start --inspect-electron",
     "build": "react-scripts build",
     "build:serve": "react-scripts build && electron-forge start",
     "build:package": "react-scripts build && electron-forge package",
@@ -59,7 +61,8 @@
     "eject": "react-scripts eject",
     "package": "electron-forge package",
     "serve": "electron-forge start",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "serve:elec": "electron . --trace-warnings"
   },
   "eslintConfig": {
     "extends": [
@@ -95,8 +98,8 @@
       "packagerConfig": {
         "prune": true,
         "asar": {
-            "unpack" : "**/app/config/*"
-        }, 
+          "unpack": "**/app/config/*"
+        },
         "icon": "./app/logo.ico",
         "ignore": [
           "/msi",
@@ -109,7 +112,7 @@
           "/node_modules/.bin",
           "move-config.js"
         ],
-        "overwrite" : true
+        "overwrite": true
       },
       "plugins": [],
       "electronRebuildConfig": {},

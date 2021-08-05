@@ -15,14 +15,9 @@ const useStyle = {
         position : 'relative'
     },
     SuccessPageModal : {
-        position : "relative",
-        display : "flex",
-        flexDirection : "column",
-        height : "100%",
-        alignItems : "center",
-        justifyContent : "center",
         outline : "none",
-        WebkitAppRegion : 'no-drag'
+        height : "650px",
+        padding : "30px",
     }
 }
 

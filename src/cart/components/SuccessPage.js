@@ -49,7 +49,11 @@ function SuccessPage(props) {
             onClose={handleClose}
             BackdropComponent={Backdrop}
             BackdropProps={{
-                timeout : 500
+                timeout : 500,
+                style : {
+                    height : "730px",
+                    borderRadius : "15px"
+                }
             }}
         >
             <Fade

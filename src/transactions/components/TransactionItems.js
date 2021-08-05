@@ -2,16 +2,19 @@ import { TableCell, TableRow } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 import React, { useState } from 'react'
 import TransactionSingle from './TransactionSingle';
+import { useHistory } from 'react-router-dom';
 
 function TransactionItems({transaction}) {
 
     const [open,setOpen] = useState(false);
+    const history = useHistory();
 
     const handleOpen = ()=>{
         setOpen(true);
     }
 
     const handleClose = ()=>{
+        history.goBack();
         setOpen(false);
     }
 

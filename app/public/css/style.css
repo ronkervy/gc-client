@@ -15,9 +15,14 @@ body {
           align-items: center;
 }
 
+img {
+  margin-top: 60px;
+}
+
 .wrapper {
   width: 130px;
   height: 60px;
+  top: 0;
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -161,8 +166,9 @@ body {
 .wrapper span {
   position: relative;
   top: 55px;
-  font-family: 'sans-serif';
+  font-family: 'arial';
   font-size: 12px;
+  font-weight: 600;
   letter-spacing: 12px;
   color: #ffffff;
   text-shadow: 2px 2px 5px #333333;

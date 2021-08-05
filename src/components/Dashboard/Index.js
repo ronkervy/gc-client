@@ -1,5 +1,6 @@
-import { Grid, Paper, Typography, withStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import { Grid, withStyles } from '@material-ui/core';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Cart from '../../cart/components/Cart';
 import ProductsList from '../../products/components/ProductsList';
 import Styles from './Styles';
@@ -8,6 +9,7 @@ import Styles from './Styles';
 function Dashboard(props) {
 
     const { ContentBlock,Dashboard,infoBlock } = props.classes;
+    const history = useHistory();
 
     return (
         <Grid container className={Dashboard} spacing={2}>

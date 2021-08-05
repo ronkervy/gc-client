@@ -1,11 +1,14 @@
 export default (docs,logoURL)=>{
 
-    console.log(docs);
+    let customer_name,transaction_date,transaction_type,total_amount;
 
-    const customer_name = 'TEST';
-    const transaction_date = 'TEST DATE';
-    const transaction_type = 'TEST DATE';
-    const total_amount = 'TOTAL';
+    docs.map(doc=>{
+        customer_name = doc[5].customer_name;
+        transaction_date = new Date(doc[5].date).toLocaleDateString();
+        transaction_type = doc[5].transact_type;
+        total_amount = doc[5].total_amount;
+        console.log(doc[5].total_amount);
+    });
 
     return {
         pageSize : {
@@ -58,12 +61,12 @@ export default (docs,logoURL)=>{
                             fontSize : 9
                         }, 
                         {
-                            text : "\n_________________________ \n \n Signiture over printed name",                            
+                            text : "\n_____________________________________ \n \n Signiture over printed name",                            
                             fontSize : 9,
                         },
                         {
                             text : [
-                                { text : `Php. ${parseFloat(total_amount).toFixed(2)}\n`,alignment : 'center' },
+                                { text : `Php. ${total_amount}\n`,alignment : 'center' },
                                 `_________________________ \n \n`,
                                 { text : 'Total Amount Purchased', alignment : 'center' }
                             ],
@@ -71,6 +74,7 @@ export default (docs,logoURL)=>{
                             fontSize : 9
                         }
                     ],
+                    alignment : "center",
                     margin : [40,10,40,0],
                     width : '*'
                 }
