@@ -4,7 +4,7 @@ import { GetSettings } from '../../settings/store/SettingsServices';
 
 
 const ProdServices = axios.create({
-    timeout : 1000 * 2 * 60
+    timeout : 1000 * 2 * 62
 });
 
 const sleep = (x)=>{
@@ -21,7 +21,7 @@ export const selectAllProducts = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt } = args;
                 const res = await ProdServices({
                     baseURL : `http://${host}:8081/api/v1`,
@@ -47,7 +47,7 @@ export const searchProduct = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt } = args;
                 const res = await ProdServices({
                     baseURL : `http://${host}:8081/api/v1`,
@@ -75,7 +75,7 @@ export const selectSingleProduct = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const res = await ProdServices({
                     baseURL : `http://${host}:8081/api/v1`,
                     method : 'GET',
@@ -100,7 +100,7 @@ export const createTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;              
+                const host = settings.address !== undefined ? settings.address : "localhost";              
                 const res = await ProdServices({
                     baseURL : `http://${host}:8081/api/v1`,
                     method : 'POST',

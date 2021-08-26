@@ -21,7 +21,7 @@ export const CreateTransactionReport = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { url } = args;
                 const res = await ReportServices({
                     baseURL : `http://${host}:8081/api/v1/gc-print`,

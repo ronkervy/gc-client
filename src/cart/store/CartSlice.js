@@ -21,7 +21,8 @@ const CartSlice = createSlice({
                 _id,
                 item_name,
                 item_price,
-                item_qty
+                item_qty,
+                item_unit
             } = payload;
 
             const qty = 1;
@@ -39,7 +40,8 @@ const CartSlice = createSlice({
                     error : false,
                     qty,
                     discount,
-                    total_per_unit : qty * item_price
+                    total_per_unit : qty * item_price,
+                    item_unit
                 });
             }
         },

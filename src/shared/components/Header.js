@@ -44,7 +44,7 @@ function Header(props) {
             if( GetSettings.fulfilled.match(resSettings) ){
                 const { settings } = resSettings.payload;                
 
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const socket = io(`http://${host}:8081`);
 
                 socket.on('connect',()=>{

@@ -22,7 +22,7 @@ export const CreateTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { values } = args;
                 const res = await CartService({
                     baseURL : `http://${host}:8081/api/v1`,

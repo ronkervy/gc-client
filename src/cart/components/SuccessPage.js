@@ -62,7 +62,7 @@ function SuccessPage(props) {
                 <div className={classes.SuccessPageModal}>
                     <Fab
                         size="small"
-                        variant="round"
+                        variant="circular"
                         onClick={handleClose}
                         style={{
                             position : "absolute",

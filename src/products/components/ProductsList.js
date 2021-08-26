@@ -35,14 +35,6 @@ function ProductsList() {
 
     },[]);
 
-    useEffect(()=>{
-        dispatch( selectAllProducts({
-            opt : {
-                url : '/products'
-            }
-        }) );
-    },[connection]);
-
     if( loading || settingsLoading ){
         return(
             <Loader />

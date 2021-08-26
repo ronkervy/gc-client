@@ -33,6 +33,7 @@ function Transaction(props) {
     });
 
     const handleClose = async (id)=>{
+        
         if( id.payload !== undefined ){
             const { transact_id } = id.payload;
             
@@ -51,7 +52,7 @@ function Transaction(props) {
 
                     docGenerator.getBlob(blob=>{
                         let url = window.URL.createObjectURL(blob);                                                
-                        history.push('/transaction/success?pdf=' + url +  "&page=transaction");
+                        history.push('/transaction/success?pdf=' + url);
                     });                    
                 }else{
                     dispatch( OpenNotification({

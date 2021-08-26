@@ -12,6 +12,7 @@ import Header from './shared/components/Header';
 import TransactionList from './transactions/components/TransactionList';
 import SuccessPage from './cart/components/SuccessPage';
 import Settings from './settings/components/settings';
+import TransactionDeleteModal from './transactions/components/TransactionDeleteModal';
 
 function App(props) {
 
@@ -22,6 +23,8 @@ function App(props) {
   const focusSearch = ()=>{
       searchRef.current.focus();
   }
+
+  console.log(process.env.REACT_APP_MODE);
 
   useEffect(()=>{
 
@@ -65,6 +68,9 @@ function App(props) {
                 </Route>
                 <Route exact path="/translist">
                     <TransactionList />
+                </Route>
+                <Route exact path="/transaction/delete/:id">
+                    <TransactionDeleteModal />
                 </Route>
                 <Route exact path="/settings" >
                     <Settings />

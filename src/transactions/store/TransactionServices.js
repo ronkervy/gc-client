@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GetSettings } from '../../settings/store/SettingsServices';
 
 const TransServices = axios.create({
-    timeout : 60 * 2 * 1000
+    timeout : 62 * 2 * 1000
 });
 
 const sleep = (x)=>{
@@ -22,7 +22,7 @@ export const getAllTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const res = await TransServices({
                     ...opt,
                     baseURL : `http://${host}:8081/api/v1`,
@@ -49,7 +49,7 @@ export const getSingleTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const res = await TransServices({
                     ...opt,
                     baseURL : `http://${host}:8081/api/v1`,
@@ -76,7 +76,7 @@ export const createTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const res = await TransServices({
                     ...opt,
                     baseURL : `http://${host}:8081/api/v1`,
@@ -103,7 +103,7 @@ export const findTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,
@@ -130,7 +130,7 @@ export const getDocDef = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,
@@ -163,7 +163,7 @@ export const updateTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt,value } = args;
                 const res = await TransServices({
                     ...opt,
@@ -191,7 +191,7 @@ export const deleteTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : undefined;
+                const host = settings.address !== undefined ? settings.address : "localhost";
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,

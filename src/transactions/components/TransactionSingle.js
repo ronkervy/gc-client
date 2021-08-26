@@ -2,13 +2,13 @@ import { faBoxes, faCalendar, faIdCard, faMarker, faMoneyBillWaveAlt, faPrint, f
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Backdrop, Button, ButtonGroup, Fade, Grid, IconButton, InputAdornment, makeStyles, Modal, TextField } from '@material-ui/core'
 import { Close } from '@material-ui/icons';
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Loader from '../../shared/components/Loader';
 import { OpenNotification } from '../../shared/store/NotificationSlice';
-import { deleteTransaction, getDocDef, updateTransaction } from '../store/TransactionServices';
+import { updateTransaction } from '../store/TransactionServices';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import TransactionDocDef from '../../cart/docs/TransactionDocDef';
@@ -50,7 +50,7 @@ const BtnGroupSingleTrans = (props)=>{
     return(
         <Grid item container lg={12} sm={12} spacing={2}>
             {data.payment_type === 'partial' ? (
-                <Grid item lg={6} sm={6}>
+                <Grid item lg={4} sm={4}>
                     <NumberFormat
                         customInput={TextField}
                         fixedDecimalScale
@@ -86,8 +86,8 @@ const BtnGroupSingleTrans = (props)=>{
             )}
             <Grid 
                 item 
-                lg={6} 
-                sm={6}
+                lg={8} 
+                sm={8}
                 style={{
                     display : "flex",
                     justifyContent : "center",
@@ -140,9 +140,7 @@ const BtnGroupSingleTrans = (props)=>{
 
                             if( CreateTransactionReport.fulfilled.match(resTrans) ){
                                 const { doc,logo } = resTrans.payload;
-                                let pdf = JSON.parse(doc);      
-                                
-                                console.log("PDF : ",pdf);
+                                let pdf = JSON.parse(doc);                                                              
 
                                 if( pdf.length > 0 ){
                                     pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -152,7 +150,7 @@ const BtnGroupSingleTrans = (props)=>{
                                     docGenerator.getBlob(blob=>{
                                         console.log(blob);
                                         const url = window.URL.createObjectURL(blob);                        
-                                        history.push('/transaction/success?pdf=' + url);
+                                        history.push('/transaction/success?pdf=' + url + "&page=transaction");
                                     });
                                 }
                             }else{
@@ -169,6 +167,18 @@ const BtnGroupSingleTrans = (props)=>{
                     <Button   
                         size="small"                                                                                     
                         color="secondary"
+                        onClick={()=>{
+                            history.push("/transaction/delete/" + data._id);
+                        }}
+                        startIcon={<FontAwesomeIcon icon={<Close />} />}
+                    >
+                        Delete
+                    </Button>
+                    <Button   
+                        size="small"                                                                                     
+                        style={{
+                            background : "orange"
+                        }}
                         onClick={fn}
                         startIcon={<FontAwesomeIcon icon={<Close />} />}
                     >
@@ -216,7 +226,7 @@ function TransactionSingle(props) {
                                 size="small"
                                 fullWidth
                                 disabled
-                                label="Transaction ID"
+                                label="Receipt No"
                                 value={transaction._id}
                                 variant="outlined"
                                 InputProps={{

@@ -101,6 +101,7 @@ function Settings(props) {
                                 size="medium"
                                 startIcon={<FontAwesomeIcon icon={faCog} />}
                                 onClick={ async(e)=>{
+                                    
                                     const resSettings = await dispatch(SetIPAddress({
                                         url : "/settings",
                                         data : {
@@ -117,7 +118,7 @@ function Settings(props) {
                                         handleRestart();
                                     }else{
                                         dispatch( OpenNotification({
-                                            message : "Settings not save.",
+                                            message : "Please run application as `Administrator`\nSettings not save.",
                                             severity : "error"
                                         }) );
                                     }
