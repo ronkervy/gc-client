@@ -18,6 +18,7 @@ function Settings(props) {
     const { loading } = useSelector(state=>state.settings);
     const { settings } = useSelector(state=>state.settings.entities);
     const [ipAdd,setIpAdd] = useState(settings.address);
+    const [port,setPort] = useState(settings.port);
     const history = useHistory();
     const { classes } = props;
 
@@ -28,6 +29,10 @@ function Settings(props) {
 
     const handleRestart = ()=>{
         ipcRenderer.invoke('restart');
+    }
+
+    const handlePortChange = (e)=>{
+        setPort(e.target.value);
     }
 
     useEffect(()=>{
@@ -83,7 +88,9 @@ function Settings(props) {
                                 variant="outlined"
                                 margin="dense"
                                 fullWidth
-                                label="Port"                
+                                label="Port"       
+                                value={port}
+                                onChange={handlePortChange}       
                                 InputProps={{
                                     startAdornment : (
                                         <InputAdornment position="start">
@@ -105,7 +112,8 @@ function Settings(props) {
                                     const resSettings = await dispatch(SetIPAddress({
                                         url : "/settings",
                                         data : {
-                                            address : ipAdd
+                                            address : ipAdd,
+                                            port : parseInt(port)
                                         }
                                     }));
                                     

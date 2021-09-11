@@ -5,11 +5,35 @@ const formatter = new Intl.NumberFormat('en-PH',{
 });
 
 pdfmake.fonts = {
-    Roboto: {
-        normal: 'Roboto-Regular.ttf',
-        bold: 'Roboto-Medium.ttf',
-        italics: 'Roboto-Italic.ttf',
-        bolditalics: 'Roboto-MediumItalic.ttf'
+    Courier : {
+        normal: 'cour.ttf',
+        bold: 'courbd.ttf',
+        italics: 'couri.ttf',
+        bolditalics: 'courbi.ttf'
+    },
+    Times: {
+        normal: 'times.ttf',
+        bold: 'timesbd.ttf',
+        italics: 'timesi.ttf',
+        bolditalics: 'timesbi.ttf'
+    },
+    Arial : {
+        normal: 'arial.ttf',
+        bold: 'arialbd.ttf',
+        italics: 'ariali.ttf',
+        bolditalics: 'arialbi.ttf'
+    },
+    // Roboto: {
+    //     normal: 'Roboto-Regular.ttf',
+    //     bold: 'Roboto-Medium.ttf',
+    //     italics: 'Roboto-Italic.ttf',
+    //     bolditalics: 'Roboto-MediumItalic.ttf'
+    // },
+    Epson: {
+        normal: 'Epson1.ttf',
+        bold: 'Epson1.ttf',
+        italics: 'Epson1.ttf',
+        bolditalics: 'Epson1.ttf'
     },
     Charlie_dotted : {
         normal : 'charlie_dotted.ttf',
@@ -19,7 +43,7 @@ pdfmake.fonts = {
     },
     DOT_MATRIX : {
         normal : 'DOTMATRI.TTF',
-        bold : 'DOTMATRI.TTF',
+        bold : 'DOTMBold.TTF',
         italics : 'DOTMATRI.TTF',
         bolditalics : 'DOTMATRI.TTF'
     },
@@ -34,6 +58,7 @@ pdfmake.fonts = {
 export default (docs,logoURL)=>{
     let discountArr = [];
     let customer_name,
+        customer_address,
         transaction_date,
         transaction_type,
         total_amount,
@@ -51,7 +76,7 @@ export default (docs,logoURL)=>{
         change_amount = doc[4].change_amount;
         cash_amount = doc[4].cash_amount;
         _id = doc[4]._id;
-        console.log(typeof(doc[4].total_amount));
+        customer_address = doc[4].customer_address;
         discountArr.push(less);
     });
 
@@ -59,51 +84,31 @@ export default (docs,logoURL)=>{
 
     return {
         pageSize : {
-            width : 684,
-            height : 396
+            width : 120 * 9.5,
+            height : 120 * 5.5
         },
-        pageMargins: [ 40, 50, 40, 90 ],
+        pageMargins: [ 20, 80, 20, 120 ],
+        compress : false,
         header : (currentPage)=>{
             if( currentPage === 1 ){
                 return {
                     columns : [
                         {
                             image : `data:image/png;base64,${logoURL}`,
-                            width : 40,
-                            height : 40,
-                            margin : [20,3,0,0]
+                            width : 60,
+                            height : 60,
+                            margin : [2,5,0,0]
                         },
                         {
                             stack : [
                                 {
-                                    text : 'GLORIOCITY \n',
-                                    style : 'header'
-                                },
-                                {
-                                    text : 'CONSTRUCTION SUPPLY',
+                                    text : 'Smart/Tnt:0963-644-8252\nGlobe/tm:0926-775-3578',
+                                    //color : "#808080"
                                     style : 'subheader'
                                 }
                             ],
-                            margin : [20,12]
-                        },
-                        {
-                            stack : [
-                                {
-                                    text : '4024 BLOCK 2 LOT 17-18',
-                                    color : "#808080"
-                                },
-                                {
-                                    text : 'MONDO STRIP JUBILATION',
-                                    color : "#808080"
-                                },
-                                {
-                                    text : 'BRGY.PLATERO',
-                                    color : "#808080"
-                                }
-                            ],
                             alignment : 'right',
-                            margin : [20,12],
-                            fontSize : 8             
+                            margin : [2,12]      
                         }   
                     ],
                     margin : [20,8],
@@ -117,29 +122,32 @@ export default (docs,logoURL)=>{
                     stack : [
                         {
                             table : {
-                                widths : ['*',150,150],
+                                widths : ['*',190,250],
                                 headerRows : 1,
                                 body : [
                                     [
                                         {
                                             text : "Prepared by : ",
                                             style : {
-                                                fontSize : 9
-                                            }
+                                                fontSize : 15
+                                            },
+                                            bold : true
                                         },
                                         {
                                             text : `Discount : ${formatter.format(discount)}`,
                                             style : {
-                                                fontSize : 9,
-                                                font : 'Roboto'
-                                            }
+                                                fontSize : 15,
+                                                font : 'Arial'
+                                            },
+                                            bold : true
                                         },
                                         {
                                             text : `Amount to pay : ${formatter.format(total_amount)}`,
                                             style : {
-                                                fontSize : 9,
-                                                font : 'Roboto'
-                                            }
+                                                fontSize : 15,
+                                                font : 'Arial'
+                                            },
+                                            bold : true
                                         }
                                     ],
                                     [ 
@@ -150,14 +158,25 @@ export default (docs,logoURL)=>{
                                         {
                                             text : [
                                                 `Cash : `,
-                                                { text : `${cash_amount}`,style : { alignment : "center", font : "Roboto" } }
-                                            ]
+                                                { 
+                                                    text : `${cash_amount}`,
+                                                    style : { 
+                                                        alignment : "center", 
+                                                        font : "Arial",
+                                                        fontSize : 15
+                                                    } 
+                                                }
+                                            ],
+                                            bold : true,
+                                            fontSize : 15
                                         }, 
                                         { 
                                             text : `Change : ${change_amount}`,
                                             style : {
-                                                font : 'Roboto'
-                                            }
+                                                font : 'Arial',
+                                                fontSize : 15
+                                            },
+                                            bold : true
                                         } 
                                     ]
                                 ]                        
@@ -166,22 +185,24 @@ export default (docs,logoURL)=>{
                         {
                             text : "**** Nothing Follows ****",                            
                             style : {
-                                fontSize : 7,        
-                                color : "#808080"                     
+                                fontSize : 12,        
+                                //color : "#808080"                     
                             },
+                            bold : true,
                             alignment : "center",
                             margin : [0,7,0,0]
                         },
                         {
-                            text : "Received goods in order and prestine condition\n\nby:______________________________________",                            
+                            text : "Received goods in order and prestine condition\n\nby:__________________________________",                            
                             style : {
-                                fontSize : 7,                         
+                                fontSize : 12,                         
                             },
                             alignment : "right",
-                            margin : [0,7,0,0]
+                            bold : true,
+                            margin : [0,3,0,0]
                         }
                     ],                    
-                    margin : [40,0]                 
+                    margin : [20,0]                 
                 }
             }
         },
@@ -190,10 +211,12 @@ export default (docs,logoURL)=>{
                 columns : [
                     { 
                         text : "ORDER SLIP", 
+                        bold : true,
                         style : 
                         { 
-                            fontSize : 12,
-                            color : "#808080" 
+                            fontSize : 22,
+                            //color : "#808080",
+                            font : "Arial"                            
                         } 
                     }
                 ],
@@ -208,11 +231,12 @@ export default (docs,logoURL)=>{
                                     'Customer Name : ',
                                     {
                                         text : `${customer_name}`,
-                                        italics : true
+                                        italics : false,
+                                        bold : true
                                     }
-                                ],
-                                bold : true,
-                                fontSize : 9,
+                                ],       
+                                bold : true,                         
+                                fontSize : 15,
                                 margin : [0,5,0,0]
                             },
                             {
@@ -220,11 +244,12 @@ export default (docs,logoURL)=>{
                                     'Transaction Date : ',
                                     {
                                         text : `${transaction_date}`,
-                                        italics : true
+                                        italics : false,
+                                        bold : true
                                     }
                                 ],
                                 bold : true,
-                                fontSize : 9,
+                                fontSize : 15,
                                 margin : [0,5,0,0]
                             },
                         ],
@@ -233,15 +258,9 @@ export default (docs,logoURL)=>{
                     {
                         columns : [                            
                             {
-                                text : [
-                                    'Total Amount : ',
-                                    {
-                                        text : `Php ${total_amount}`,
-                                        font : "Roboto"
-                                    },                                
-                                ],
+                                text : `Address : ${customer_address}`,
                                 bold : true,
-                                fontSize : 9,
+                                fontSize : 15,
                                 margin : [0,5,0,10]
                             },
                             {
@@ -249,14 +268,50 @@ export default (docs,logoURL)=>{
                                     'Receipt# : ',
                                     {
                                         text : `${_id}`,
-                                        fontSize : 7
+                                        fontSize : 15
                                     }
                                 ],                         
                                 bold : true,
-                                fontSize : 9,
+                                fontSize : 15,
                                 margin : [0,5,0,10]
                             }
                         ]
+                    },
+                    {
+                        table : {
+                            dontBreakRows : true,
+                            headerRows: 1,
+                            widths: [ 60,60,'*', 120,80],
+                            body: [
+                                [                                     
+                                    {
+                                        text : 'QTY',
+                                        style : 'tableHeader',
+                                        border : [true,true,true,false]
+                                    },
+                                    {
+                                        text : 'UNIT',
+                                        style : 'tableHeader',
+                                        border : [true,true,true,false]
+                                    },
+                                    {
+                                        text : 'ITEM NAME',
+                                        style : 'tableHeader',
+                                        border : [true,true,true,false]
+                                    },
+                                    {
+                                        text : 'UNIT PRICE',
+                                        style : 'tableHeader',
+                                        border : [true,true,true,false]
+                                    },
+                                    {
+                                        text : 'AMOUNT',
+                                        style : 'tableHeader',
+                                        border : [true,true,true,false]
+                                    },                                   
+                                ]                                                   
+                            ]
+                        }
                     },
                     {
                         layout : {
@@ -266,14 +321,14 @@ export default (docs,logoURL)=>{
                             hLineHeight : (i,node)=>{
                                 return (i === 1) ? 0 : 1;
                             },
-                            paddingBottom: (i, node, colIndex) => {
+                            paddingBottom: (i, node, colIndex) => {                                
                                 const DEFAULT_PADDING = 2;
                                 // Calculate padding for the last element of the table.
-                                if (i === node.table.body.length - 1) {
-                                    const currentPosition = node.positions[node.positions.length - 1];
+                                if (i === node.table.body.length - 1 && node.positions[node.positions.length - 1] !== undefined) {
+                                    const currentPosition = node.positions[node.positions.length - 1];                                    
                                     const totalPageHeight = currentPosition.pageInnerHeight;
                                     const currentHeight = currentPosition.top;
-                                    const paddingBottom = totalPageHeight - currentHeight;
+                                    const paddingBottom = totalPageHeight - currentHeight;                                    
                                     
                                     if( paddingBottom < 0 ){
                                         return DEFAULT_PADDING;
@@ -286,31 +341,10 @@ export default (docs,logoURL)=>{
                             }
                         },
                         table : {
+                            dontBreakRows : true,
                             headerRows: 1,
-                            widths: [ 40,40,'*', 80,80],
-                            body: [
-                                [                                     
-                                    {
-                                        text : 'QTY',
-                                        style : 'tableHeader'
-                                    },
-                                    {
-                                        text : 'UNIT',
-                                        style : 'tableHeader'
-                                    },
-                                    {
-                                        text : 'Item Name',
-                                        style : 'tableHeader'
-                                    },
-                                    {
-                                        text : 'Unit Price',
-                                        style : 'tableHeader'
-                                    },
-                                    {
-                                        text : 'Amount',
-                                        style : 'tableHeader'
-                                    },                                   
-                                ],    
+                            widths: [ 60,60,'*', 120,80],
+                            body: [                                   
                                 ...docs                                                      
                             ]
                         }
@@ -321,39 +355,43 @@ export default (docs,logoURL)=>{
         ],
         styles : {
             header : {
-                bold : true,
-                color : "#808080"
+                // bold : true,
+                //color : "#808080"
+                fontSize : 12,
+                font : "Arial",
+                bold : true
             },
             subheader : {
-                fontSize : 9
+                fontSize : 12,
+                // bold : true,
+                font : "Arial",
+                bold : true
             },
             tableHeader : {
-                fontSize : 9,
-                color : 'white',
-                fillColor : 'grey',
+                fontSize : 16,
                 alignment : 'center',
-                margin : [0,6],
-                border : [true,false,true,false]
+                margin : [0,3],  
+                bold : true,
+                border : [true,true,true,true]      
             },
             tableItems : {
                 alignment : 'center',
-                margin : [0,5],
-                fontSize : 8,
-                color : "#808080"
+                margin : [0,2],
+                fontSize : 13,
+                //color : "#808080"
             },
             tableItemsAmount : {
                 alignment : 'center',
-                margin : [0,6],
-                fontSize : 9,
-                font : "Roboto",
-                color : "#808080"
+                margin : [0,2],
+                fontSize : 13,
+                font : "Arial",
             }
         },
         defaultStyle : {
-            font : 'FAKE_RECEIPT',
+            font : 'Times',
             columnGap : 5,
-            color : "#808080",
-            fontSize : 9
+            //color : "#808080",
+            fontSize : 12
         }
     }
 }

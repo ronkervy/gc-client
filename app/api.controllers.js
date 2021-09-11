@@ -9,9 +9,10 @@ module.exports = {
 
             const rawFile = await fs.promises.readFile(filePath);
             let settingsJSON = JSON.parse(rawFile);
-            const { address } = req.body;
+            const { address,port } = req.body;
 
             settingsJSON.settings.address = address;
+            settingsJSON.settings.port = port !== undefined ? port : 8081;
             let settingsSTR = JSON.stringify(settingsJSON,null,2);
             await fs.promises.writeFile(filePath,settingsSTR);
 

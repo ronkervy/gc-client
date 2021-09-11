@@ -23,9 +23,10 @@ export const getAllTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
                 await sleep(2000);
@@ -50,9 +51,10 @@ export const getSingleTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
                 await sleep(2000);
@@ -77,9 +79,10 @@ export const createTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'POST',
                     data : values
                 });
@@ -104,10 +107,11 @@ export const findTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
                 await sleep(2000);
@@ -131,10 +135,11 @@ export const getDocDef = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET',
                     responseType : 'blob',  
                     headers: {
@@ -164,10 +169,11 @@ export const updateTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt,value } = args;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'PATCH',
                     data : value
                 });
@@ -192,10 +198,11 @@ export const deleteTransaction = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt } = args;
                 const res = await TransServices({
                     ...opt,
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'DELETE'
                 });
                 await sleep(2000);

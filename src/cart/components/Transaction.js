@@ -1,4 +1,4 @@
-import { faDollarSign, faMoneyBill, faMoneyBillAlt, faPrint, faSave, faUser, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding, faDollarSign, faMoneyBill, faMoneyBillAlt, faPrint, faSave, faUser, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Backdrop, Fade, Grid, Modal, withStyles, TextField, InputAdornment, ButtonGroup, Button, Typography, MenuItem } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
@@ -14,7 +14,9 @@ import { CreateTransactionReport } from '../../shared/store/ReportServices';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import TransactionDocDef from '../docs/TransactionDocDef';
-
+import { io } from 'socket.io-client';
+import { GetSettings } from '../../settings/store/SettingsServices';
+ 
 function Transaction(props) {
 
     const dispatch = useDispatch();
@@ -27,49 +29,66 @@ function Transaction(props) {
     const [total,setTotal] = useState(0);
     const [info,setInfo] = useState({
         customer_name : '',
+        customer_address : '',
         transact_payment_type : 'full',
         cash_amount : 0,
         transact_status : true
     });
 
     const handleClose = async (id)=>{
-        
-        if( id.payload !== undefined ){
-            const { transact_id } = id.payload;
-            
-            const resTrans = await dispatch( CreateTransactionReport({
-                url : '/transactions/' + transact_id
+        try{
+
+            const resSettings = await dispatch( GetSettings({
+                url : '/settings'
             }) );
-    
-            if( CreateTransactionReport.fulfilled.match(resTrans) ){
-                const { doc,logo } = resTrans.payload;
-                let pdf = JSON.parse(doc);      
 
-                if( pdf.length > 0 ){                    
-                    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                    const docDef = TransactionDocDef(pdf,logo);
-                    const docGenerator = pdfMake.createPdf(docDef);
+            if( GetSettings.fulfilled.match(resSettings) ){
+                const { settings } = resSettings.payload;
+                const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
+                const socket = io(`http://${host}:${port}`);
 
-                    docGenerator.getBlob(blob=>{
-                        let url = window.URL.createObjectURL(blob);                                                
-                        history.push('/transaction/success?pdf=' + url);
-                    });                    
-                }else{
-                    dispatch( OpenNotification({
-                        message : 'No Transaction has been made.',
-                        severity : 'error'
+                if( id.payload !== undefined ){
+                    const { transact_id } = id.payload;
+                    
+                    const resTrans = await dispatch( CreateTransactionReport({
+                        url : '/transactions/' + transact_id
                     }) );
-                }   
-            }else{
-                dispatch( OpenNotification({
-                    message : 'Transaction Failed, Pls try again.',
-                    severity : 'error'
-                }) );
-            }
-        }else{            
-            await history.goBack();
-        }      
-        setOpen(false);      
+            
+                    if( CreateTransactionReport.fulfilled.match(resTrans) ){
+                        const { doc,logo } = resTrans.payload;
+                        let pdf = JSON.parse(doc);      
+        
+                        if( pdf.length > 0 ){                    
+                            pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                            const docDef = TransactionDocDef(pdf,logo);
+                            const docGenerator = pdfMake.createPdf(docDef);
+        
+                            docGenerator.getBase64(data=>{
+                                socket.emit('printcmd',{
+                                    sid : socket.id,
+                                    data,
+                                    id : transact_id,
+                                });
+                            });
+        
+                            docGenerator.getBlob(blob=>{
+                                let url = window.URL.createObjectURL(blob);                                                
+                                history.push('/transaction/success?pdf=' + url);
+                            });                    
+                        } 
+                    }
+                }else{            
+                    await history.goBack();
+                }  
+            }                
+            setOpen(false); 
+        }catch(err){
+            dispatch( OpenNotification({
+                message : 'Transaction Failed, Pls try again.',
+                severity : 'error'
+            }) );
+        }     
     }
 
     useEffect(()=>{
@@ -180,6 +199,7 @@ function Transaction(props) {
                         <Grid item lg={12} sm={12}>
                             <TextField
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={info.customer_name}
                                 onChange={(e)=>{
@@ -201,12 +221,37 @@ function Transaction(props) {
                             />
                         </Grid>
                         <Grid item lg={12} sm={12}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                variant="outlined"
+                                value={info.customer_address}
+                                onChange={(e)=>{
+                                    setInfo(info=>{
+                                        return {
+                                            ...info,
+                                            customer_address : e.target.value
+                                        }
+                                    });
+                                }}
+                                label="Customer Address"
+                                InputProps={{
+                                    startAdornment : (
+                                        <InputAdornment position="start">
+                                            <FontAwesomeIcon icon={faBuilding} />
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </Grid>
+                        <Grid item lg={12} sm={12}>
                             <NumberFormat 
                                 error={(info.transact_payment_type == 'full' && info.cash_amount < total ? true : false) || (
                                     info.cash_amount == 0 && info.transact_payment_type == 'partial'
                                 )}
                                 label="Cash Amount"
                                 fullWidth
+                                size="small "
                                 variant="outlined"
                                 customInput={TextField}
                                 value={info.cash_amount}
@@ -235,6 +280,7 @@ function Transaction(props) {
                             <TextField
                                 fullWidth
                                 variant="outlined"
+                                size="small"
                                 select
                                 label="Payment Type"
                                 value={info.transaction_payment_type}
@@ -281,6 +327,7 @@ function Transaction(props) {
                                                 return {
                                                     ...item,                                                    
                                                     customer_name : info.customer_name,
+                                                    customer_address : info.customer_address,
                                                     total_amount : total,
                                                     cash_amount : info.cash_amount,
                                                     change_amount : info.cash_amount - total,

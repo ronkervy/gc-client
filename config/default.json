@@ -1,9 +1,14 @@
 {
   "settings": {
-    "port": "",
+    "port": 8081,
     "theme": {
       "darkmode": false
     },
-    "address": "192.168.1.12"
+    "address": "192.168.0.3",
+    "printer": {
+      "list": [],
+      "default": "",
+      "options": {}
+    }
   }
 }

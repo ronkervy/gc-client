@@ -22,9 +22,10 @@ export const selectAllProducts = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt } = args;
                 const res = await ProdServices({
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     ...opt,                
                     method : "GET"
                 });
@@ -48,9 +49,10 @@ export const searchProduct = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const { opt } = args;
                 const res = await ProdServices({
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     ...opt,                
                     method : 'GET'
                 });
@@ -76,8 +78,9 @@ export const selectSingleProduct = createAsyncThunk(
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
+                const port = settings.port !== undefined ? settings.port : 8081;
                 const res = await ProdServices({
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET',
                     url : '/products/' + id
                 });
@@ -100,9 +103,10 @@ export const createTransaction = createAsyncThunk(
 
             if(GetSettings.fulfilled.match(resSettings)){
                 const { settings } = resSettings.payload;
-                const host = settings.address !== undefined ? settings.address : "localhost";              
+                const host = settings.address !== undefined ? settings.address : "localhost";      
+                const port = settings.port !== undefined ? settings.port : 8081;        
                 const res = await ProdServices({
-                    baseURL : `http://${host}:8081/api/v1`,
+                    baseURL : `http://${host}:${port}/api/v1`,
                     method : 'POST',
                     url : '/products',
                     data : values

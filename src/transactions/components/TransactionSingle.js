@@ -13,7 +13,9 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import TransactionDocDef from '../../cart/docs/TransactionDocDef';
 import {CreateTransactionReport} from '../../shared/store/ReportServices';
-
+import { io } from 'socket.io-client';
+import { GetSettings } from '../../settings/store/SettingsServices';
+ 
 const useStyles = makeStyles((theme)=>({
     Modal : {
         display: 'flex',
@@ -133,32 +135,52 @@ const BtnGroupSingleTrans = (props)=>{
                         size="small"                                                                                       
                         color="primary"
                         onClick={async ()=>{
-                            
-                            const resTrans = await dispatch( CreateTransactionReport({
-                                url : '/transactions/' + data._id
-                            }) );
+                            try{
+                                const resSettings = await dispatch( GetSettings({
+                                    url : '/settings'
+                                }) );
 
-                            if( CreateTransactionReport.fulfilled.match(resTrans) ){
-                                const { doc,logo } = resTrans.payload;
-                                let pdf = JSON.parse(doc);                                                              
-
-                                if( pdf.length > 0 ){
-                                    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                                    const docDef = TransactionDocDef(pdf,logo);
-                                    const docGenerator = pdfMake.createPdf(docDef);
-
-                                    docGenerator.getBlob(blob=>{
-                                        console.log(blob);
-                                        const url = window.URL.createObjectURL(blob);                        
-                                        history.push('/transaction/success?pdf=' + url + "&page=transaction");
-                                    });
+                                if( GetSettings.fulfilled.match(resSettings) ){
+                                    const { settings } = resSettings.payload;
+                                    const host = settings.address !== undefined ? settings.address : "localhost";
+                                    const port = settings.port !== undefined ? settings.port : 8081;
+                                    const socket = io(`http://${host}:${port}`);
+                                    
+                                    const resTrans = await dispatch( CreateTransactionReport({
+                                        url : '/transactions/' + data._id
+                                    }) );
+        
+                                    if( CreateTransactionReport.fulfilled.match(resTrans) ){
+                                        const { doc,logo } = resTrans.payload;
+                                        let pdf = JSON.parse(doc);                                                              
+        
+                                        if( pdf.length > 0 ){
+                                            pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                                            const docDef = TransactionDocDef(pdf,logo);
+                                            const docGenerator = pdfMake.createPdf(docDef);
+        
+                                            docGenerator.getBase64(data64=>{
+                                                socket.emit('printcmd',{
+                                                    sid : socket.id,
+                                                    data : data64,
+                                                    id : data._id,
+                                                });
+                                            });
+        
+                                            docGenerator.getBlob(blob=>{
+                                                const url = window.URL.createObjectURL(blob);                        
+                                                history.push('/transaction/success?pdf=' + url + "&page=transaction");
+                                            });
+                                        }
+                                    }
                                 }
-                            }else{
+                                
+                            }catch(err){
                                 dispatch( OpenNotification({
                                     message : 'Cannot Print Transaction, please try again.',
                                     severity : 'error'
                                 }) );
-                            }
+                            }                            
                         }}
                         startIcon={<FontAwesomeIcon icon={faPrint} />}
                     >

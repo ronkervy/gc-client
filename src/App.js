@@ -19,12 +19,9 @@ function App(props) {
   const dispatch = useDispatch();
   const { root,ContainerWrap } = props.classes;
   const searchRef = useRef(null);
-
   const focusSearch = ()=>{
       searchRef.current.focus();
   }
-
-  console.log(process.env.REACT_APP_MODE);
 
   useEffect(()=>{
 

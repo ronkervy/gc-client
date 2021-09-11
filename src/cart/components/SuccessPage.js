@@ -33,7 +33,7 @@ function SuccessPage(props) {
         setOpen(false);
     }
 
-    useEffect(()=>{
+    useEffect(()=>{        
         setOpen(true);
     },[]);
 

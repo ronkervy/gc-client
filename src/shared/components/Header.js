@@ -13,7 +13,6 @@ import { useHistory } from 'react-router';
 import { GetSettings } from '../../settings/store/SettingsServices';
 import { OpenNotification } from '../store/NotificationSlice';
 import Loader from './Loader';
-import { clearProducts } from '../../products/store/productSlice';
 
 function Header(props) {
 
@@ -45,7 +44,8 @@ function Header(props) {
                 const { settings } = resSettings.payload;                
 
                 const host = settings.address !== undefined ? settings.address : "localhost";
-                const socket = io(`http://${host}:8081`);
+                const port = settings.port !== undefined ? settings.port : 8081;
+                const socket = io(`http://${host}:${port}`);
 
                 socket.on('connect',()=>{
                     dispatch( setConnection(socket.connected) );
@@ -53,6 +53,14 @@ function Header(props) {
 
                 socket.on('disconnect',()=>{                    
                     dispatch( setConnection(socket.connected) );
+                });
+
+                socket.on('server-printer',(printerName)=>{
+                    console.log(printerName);
+                });
+
+                socket.on('print-status',(args)=>{
+                    console.log(args);
                 });
             }
 
