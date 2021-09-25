@@ -29,6 +29,7 @@
     "electron-node-config": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-wix-msi": "^2.2.0",
+    "escape-string-regexp": "^1.0.5",
     "express": "^4.17.1",
     "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
@@ -62,7 +63,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "package": "electron-forge package",
-    "serve": "electron-forge start",
+    "serve": "set REACT_APP_MODE=development && electron-forge start",
     "make": "electron-forge make",
     "serve:elec": "electron . --trace-warnings"
   },

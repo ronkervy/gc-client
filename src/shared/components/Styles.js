@@ -9,7 +9,7 @@ const useStyles = {
         alignItems : "center",
         zIndex : 100,
         backgroundColor : "rgba(0, 0, 0, 0.9)",
-        height: "730px",
+        height: "700px",
         width : "100%",
         transition : "all 300ms linear",
         borderRadius : '20px'

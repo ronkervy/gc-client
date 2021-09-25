@@ -9,6 +9,10 @@ const msiCreator = new MSICreator({
   name: 'GC CLIENT APP',
   manufacturer: 'KVM Tech',
   version: '1.1.2',
+  appIconPath : path.resolve(__dirname,'./app/logo.ico'),
+  features : {
+    autoLaunch : true
+  },
   outputDirectory: path.resolve(__dirname,'./msi'),
   ui : {
       chooseDirectory : true

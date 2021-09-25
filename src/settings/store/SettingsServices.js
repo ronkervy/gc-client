@@ -4,7 +4,7 @@ import axios from 'axios';
 const host = "http://localhost:8082/api";
 const SettingsServices = axios.create({
     baseURL : host,
-    timeout : 1000 * 2 * 62
+    timeout : 1000
 });
 
 const sleep = (x)=>{

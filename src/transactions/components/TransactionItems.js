@@ -17,7 +17,7 @@ function TransactionItems({transaction}) {
         history.goBack();
         setOpen(false);
     }
-
+    
     return (
         <TableRow
             key={transaction._id}
@@ -66,7 +66,7 @@ function TransactionItems({transaction}) {
             >
                 <NumberFormat 
                     displayType="text"
-                    value={transaction.total_price}
+                    value={transaction.total_price_srp}
                     fixedDecimalScale
                     decimalScale={2}
                     thousandSeparator
@@ -80,7 +80,8 @@ function TransactionItems({transaction}) {
             >
                 <NumberFormat 
                     displayType="text"
-                    value={transaction.change_amount}
+                    value={transaction.change_amount_srp}
+                    thousandSeparator
                     allowNegative={false}
                     fixedDecimalScale
                     decimalScale={2}

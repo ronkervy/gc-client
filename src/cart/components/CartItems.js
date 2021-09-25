@@ -11,14 +11,17 @@ function CartItems({item}) {
 
     const dispatch = useDispatch();
     const [total,setTotal] = useState(parseInt(item.item_price) * parseInt(item.qty));
+    const [totalSrp,setTotalSrp] = useState(parseInt(item.item_srp) * parseInt(item.qty));
 
     useEffect(()=>{
         setTotal(parseInt(item.item_price) * parseInt(item.qty));
+        setTotalSrp(parseInt(item.item_srp) * parseInt(item.qty));
     },[item.qty]);
 
     useEffect(()=>{
         setTotal(item.total_per_unit);
-    },[item.total_per_unit]);
+        setTotalSrp(item.total_per_unit_srp);
+    },[item.total_per_unit,item.total_per_unit_srp]);
 
     return (
         <>
@@ -36,7 +39,7 @@ function CartItems({item}) {
             >
                 <TableCell
                     style={{fontSize : '10px'}}
-                ><FontAwesomeIcon color="grey" icon={faBoxes} />&nbsp;&nbsp;{item.item_name}</TableCell>
+                ><FontAwesomeIcon color="grey" icon={faBoxes} />&nbsp;&nbsp;{item.item_name.substring(0,18) + '...'}</TableCell>
                 <TableCell>
                     <TextField 
                         error={ item.error }
@@ -65,7 +68,7 @@ function CartItems({item}) {
                     <NumberFormat
                         thousandSeparator 
                         displayType="text"
-                        value={total}
+                        value={totalSrp}
                         style={{ fontSize : '10px' }}
                         decimalScale={2} 
                         decimalSeparator={'.'}
@@ -77,6 +80,7 @@ function CartItems({item}) {
                         disabled={item.error}
                         variant="outlined"
                         size="small" 
+                        margin="none"
                         value={item.discount * 100}      
                         inputProps={{
                             style : {
@@ -99,6 +103,7 @@ function CartItems({item}) {
                 <TableCell>
                     <IconButton
                         color="secondary"
+                        size="small"
                         onClick={()=>{
                             dispatch( removeItem(item._id) );
                         }}

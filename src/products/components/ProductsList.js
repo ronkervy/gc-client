@@ -14,7 +14,7 @@ function ProductsList() {
     const { isConnected : connection } = useSelector(state=>state.connection);
     const loading = useSelector(loadingSelector);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(8);
+    const [rowsPerPage, setRowsPerPage] = useState(11);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -26,7 +26,11 @@ function ProductsList() {
     };
 
     useEffect(()=>{
+        setPage(0);
+    },[products]);
 
+    useEffect(()=>{
+        
         dispatch( selectAllProducts({
             opt : {
                 url : '/products'
@@ -43,7 +47,7 @@ function ProductsList() {
 
     return (
         <div>
-            <TableContainer component={Paper} style={{ minHeight : "600px", position : 'relative' }}>
+            <TableContainer component={Paper} style={{ minHeight : "550px", position : 'relative' }}>
                 <Table size="small" stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -62,12 +66,13 @@ function ProductsList() {
                         style={{
                             position : 'absolute',
                             bottom : '0',
-                            left : '0'
+                            left : '0',
+                            WebkitAppRegion : 'no-drag'
                         }}
                     >
                         <TableCell colSpan={4}>
                             <TablePagination 
-                                rowsPerPageOptions={[8, 16, 800]}
+                                rowsPerPageOptions={[11]}
                                 count={products.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}

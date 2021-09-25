@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GetSettings } from '../../settings/store/SettingsServices';
 
 const ReportServices = axios.create({
-    timeout : 62 * 2 * 1000
+    timeout : 1000
 });
 
 const sleep = (x)=>{
@@ -29,7 +29,7 @@ export const CreateTransactionReport = createAsyncThunk(
                     url,
                     method : 'GET'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return await res.data;            
             }            
         }catch(err){

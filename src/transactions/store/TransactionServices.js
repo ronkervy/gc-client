@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GetSettings } from '../../settings/store/SettingsServices';
 
 const TransServices = axios.create({
-    timeout : 62 * 2 * 1000
+    timeout : 1000
 });
 
 const sleep = (x)=>{
@@ -29,7 +29,7 @@ export const getAllTransaction = createAsyncThunk(
                     baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){
@@ -57,7 +57,7 @@ export const getSingleTransaction = createAsyncThunk(
                     baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){
@@ -86,7 +86,7 @@ export const createTransaction = createAsyncThunk(
                     method : 'POST',
                     data : values
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){
@@ -114,7 +114,7 @@ export const findTransaction = createAsyncThunk(
                     baseURL : `http://${host}:${port}/api/v1`,
                     method : 'GET'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){
@@ -161,7 +161,6 @@ export const updateTransaction = createAsyncThunk(
     'transactions/updateTransaction',
     async(args,{rejectWithValue,dispatch})=>{
         try{
-
             const resSettings = await dispatch( GetSettings({
                 url : "/settings"
             }) );
@@ -177,7 +176,7 @@ export const updateTransaction = createAsyncThunk(
                     method : 'PATCH',
                     data : value
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){
@@ -205,7 +204,7 @@ export const deleteTransaction = createAsyncThunk(
                     baseURL : `http://${host}:${port}/api/v1`,
                     method : 'DELETE'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;
             }
         }catch(err){

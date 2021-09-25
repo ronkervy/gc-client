@@ -26,7 +26,7 @@ function Cart(props) {
     const { loading } = useSelector(state=>state.cart);
     const [items,setItems] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(8);
+    const [rowsPerPage, setRowsPerPage] = useState(9);
     const history = useHistory();
 
     const handleChangePage = (event, newPage) => {
@@ -53,7 +53,7 @@ function Cart(props) {
             component={Paper} 
             elevation={2} 
             style={{
-                minHeight : "600px",
+                minHeight : "550px",
                 position : 'relative'
             }}
         >
@@ -77,7 +77,8 @@ function Cart(props) {
                 <TableRow style={{
                     position : "absolute",
                     bottom : '0',
-                    left : '0'
+                    left : '0',
+                    WebkitAppRegion : "no-drag"
                 }}>      
                     <TableCell colSpan={1}>
                         <Button
@@ -119,7 +120,7 @@ function Cart(props) {
                     </TableCell>              
                     <TableCell colSpan={4}>
                         <TablePagination
-                            rowsPerPageOptions={[8, 16, 800]}
+                            rowsPerPageOptions={[9]}
                             count={items.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

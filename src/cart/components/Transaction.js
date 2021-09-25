@@ -27,6 +27,7 @@ function Transaction(props) {
     const history = useHistory();
     const {TransactionModal,ModalContent} = props.classes;
     const [total,setTotal] = useState(0);
+    const [totalSrp,setTotalSrp] = useState(0);
     const [info,setInfo] = useState({
         customer_name : '',
         customer_address : '',
@@ -95,7 +96,9 @@ function Transaction(props) {
         setOpen(true);
         cart.map(item=>{
             let price = item.total_per_unit;
+            let price_srp = item.total_per_unit_srp;
             setTotal( prevVal => prevVal + price)
+            setTotalSrp( prevVal => prevVal + price_srp );
         })
     },[]);
 
@@ -150,7 +153,7 @@ function Transaction(props) {
                                 Total Price :&nbsp;
                                 <NumberFormat
                                     displayType="text" 
-                                    value={total}
+                                    value={totalSrp}
                                     customInput={TextField}
                                     fixedDecimalScale
                                     decimalScale={2}
@@ -176,7 +179,7 @@ function Transaction(props) {
                                 Cash Change :&nbsp;                                
                                 <NumberFormat
                                     displayType="text" 
-                                    value={info.cash_amount == 0 ? 0.00 : info.cash_amount - total}
+                                    value={info.cash_amount == 0 ? 0.00 : info.cash_amount - totalSrp}
                                     customInput={TextField}
                                     fixedDecimalScale
                                     decimalScale={2}
@@ -329,8 +332,10 @@ function Transaction(props) {
                                                     customer_name : info.customer_name,
                                                     customer_address : info.customer_address,
                                                     total_amount : total,
+                                                    total_amount_srp : totalSrp,
                                                     cash_amount : info.cash_amount,
                                                     change_amount : info.cash_amount - total,
+                                                    change_amount_srp : info.cash_amount - totalSrp,
                                                     transact_payment_type : info.transact_payment_type === '' ? (info.cash_amount >= total ? 'full' : 'partial') : info.transact_payment_type,
                                                     transact_status : info.transact_payment_type === 'full' ? true : false
                                                 }

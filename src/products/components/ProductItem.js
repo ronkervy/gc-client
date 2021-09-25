@@ -1,10 +1,11 @@
 import { faBox, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core';
+import { IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../cart/store/CartSlice';
-
+import NumberFormat from 'react-number-format';
+ 
 function ProductItem({item}) {
 
     const dispatch = useDispatch();
@@ -12,26 +13,34 @@ function ProductItem({item}) {
     return (
         <>
             <TableRow 
-                hover key={item._id} 
-                style={{ cursor : "pointer" }}
+                hover
+                key={item._id} 
+                style={{ cursor : "pointer",WebkitAppRegion : 'no-drag' }}
+                title={`Name : ${item.item_name}\nType : ${item.item_type}\nBrand : ${item.item_brand}`}
             >
-                <TableCell style={{
-                    fontSize : "10px"
-                }}><FontAwesomeIcon color="grey" icon={faBox} />&nbsp;&nbsp;{item.item_name}</TableCell>
-                <TableCell style={{
-                    fontSize : "10px"
-                }}>{item.item_qty}</TableCell>
-                <TableCell style={{
-                    fontSize : "10px"
-                }}>{item.item_price}</TableCell>
+                <TableCell style={{ fontSize : "11px" }}><FontAwesomeIcon color="grey" icon={faBox} />&nbsp;&nbsp;{item.item_name}</TableCell>
+                <TableCell style={{ fontSize : "11px" }}>{item.item_qty}</TableCell>
+                <TableCell style={{ fontSize : "11px" }}>
+                    <NumberFormat 
+                        displayType="text"
+                        thousandSeparator
+                        fixedDecimalScale
+                        allowNegative={false}
+                        decimalScale={2}
+                        decimalSeparator="."                        
+                        customInput={TextField}                        
+                        value={item.item_srp}
+                    />
+                </TableCell>
                 <TableCell>
                     <IconButton
                         color="primary"
+                        size="small"
                         onClick={()=>{
                             dispatch( addItem(item) );
                         }}
                         style={{
-                            WebkitAppRegion : 'no-drag'
+                            WebkitAppRegion : 'no-drag',
                         }}
                     >
                         <FontAwesomeIcon icon={faPlusCircle} />

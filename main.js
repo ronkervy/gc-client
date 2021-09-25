@@ -1,20 +1,19 @@
-const { app,BrowserWindow,ipcMain } = require('electron');
+const { app,BrowserWindow,ipcMain,screen } = require('electron');
 const server = require('./app/index');
 const exec = require('child_process').exec;
 const config = require('electron-node-config');
+const path = require('path');
 
 if (require('electron-squirrel-startup')) return app.quit();
-// const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 let win,splashscreen;
 
 let ipadd = config.get('settings');
 
 const createWindow = ()=>{
-
     win = new BrowserWindow({
         width : 1024,  
-        height : 750,
+        height : 768,
         hasShadow : true,
         useContentSize : true,
         // backgroundColor : "#121421",
@@ -27,7 +26,8 @@ const createWindow = ()=>{
         autoHideMenuBar : true,
         resizable : false,
         frame : false,
-        show : false
+        show : false,
+        icon : path.resolve(__dirname,'/app/logo.ico')
     });
 
     splashscreen = new BrowserWindow({
@@ -72,9 +72,12 @@ const createWindow = ()=>{
 }
 
 app.whenReady().then(()=>{
-    // installExtension(REDUX_DEVTOOLS)
-    // .then((name) => console.log(`Added Extension:  ${name}`))
-    // .catch((err) => console.log('An error occurred: ', err));
+    if( process.env.REACT_APP_MODE === 'development' ){
+        const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+        installExtension(REDUX_DEVTOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
+    }
     createWindow()
 });
 

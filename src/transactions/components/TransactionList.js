@@ -111,14 +111,14 @@ function TransactionList(props) {
             TransitionComponent={TransitionDialog}
             BackdropProps={{
                 style : {
-                    height : "730px",
+                    height : "700px",
                     borderRadius : "15px"
                 }
             }}
             style={{
                 WebkitAppRegion : "no-drag",
                 padding : "20px",
-                height : "690px",
+                height : "660px",
                 borderRadius : "10px"
             }}
         >   
@@ -185,6 +185,10 @@ function TransactionList(props) {
                     <TableContainer
                         component={Paper}
                         elevation={2}
+                        style={{
+                            minHeight : "500px",
+                            position : "relative"
+                        }}
                     >
                         <Table 
                             stickyHeader 
@@ -205,16 +209,18 @@ function TransactionList(props) {
                                 {transactions.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(entry=>(
                                     <TransactionItems transaction={entry} />
                                 ))}
-                            </TableBody>
-                            <TablePagination 
-                                rowsPerPageOptions={[8, 16, 800]}
-                                count={transactions.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                                labelRowsPerPage={false}
-                            />
+                                <TableRow style={{ position : "absolute", bottom : 0, right : 0 }} >
+                                    <TablePagination 
+                                        rowsPerPageOptions={[8, 16, 800]}
+                                        count={transactions.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                        labelRowsPerPage={false}
+                                    />
+                                </TableRow>
+                            </TableBody>                            
                         </Table>
                     </TableContainer>
                 </Grid>

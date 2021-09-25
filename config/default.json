@@ -4,7 +4,7 @@
     "theme": {
       "darkmode": false
     },
-    "address": "192.168.0.3",
+    "address": "192.168.0.5",
     "printer": {
       "list": [],
       "default": "",

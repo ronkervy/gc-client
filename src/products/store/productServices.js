@@ -4,7 +4,7 @@ import { GetSettings } from '../../settings/store/SettingsServices';
 
 
 const ProdServices = axios.create({
-    timeout : 1000 * 2 * 62
+    timeout : 1000
 });
 
 const sleep = (x)=>{
@@ -29,7 +29,7 @@ export const selectAllProducts = createAsyncThunk(
                     ...opt,                
                     method : "GET"
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;
             }
         }catch(err){    
@@ -56,7 +56,7 @@ export const searchProduct = createAsyncThunk(
                     ...opt,                
                     method : 'GET'
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;
             }
                     
@@ -84,6 +84,7 @@ export const selectSingleProduct = createAsyncThunk(
                     method : 'GET',
                     url : '/products/' + id
                 });
+                await sleep(1000);
                 return res.data;  
             }         
         }catch(err){
@@ -111,6 +112,7 @@ export const createTransaction = createAsyncThunk(
                     url : '/products',
                     data : values
                 });
+                await sleep(1000);
                 return res.data; 
             }          
         }catch(err){

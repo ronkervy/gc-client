@@ -1,10 +1,10 @@
-import { Box, Button, Divider, Grid, IconButton, InputAdornment, Paper, TextField, Typography, withStyles } from '@material-ui/core'
+import { Box, Button, Divider, Grid, IconButton, InputAdornment, Paper, Popper, TextField, Typography, withStyles } from '@material-ui/core'
 import { Close, Minimize, SettingsRemote } from '@material-ui/icons'
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useState,useRef } from 'react'
 import useStyles from './Styles';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCog, faList, faSearch, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faList, faSearch, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { setConnection } from '../store/ConnectionSlice';
@@ -13,6 +13,9 @@ import { useHistory } from 'react-router';
 import { GetSettings } from '../../settings/store/SettingsServices';
 import { OpenNotification } from '../store/NotificationSlice';
 import Loader from './Loader';
+import { productsSelector } from '../../products/store/productSlice';
+import { Autocomplete } from '@material-ui/lab';
+import escapeStringRegexp from 'escape-string-regexp';
 
 function Header(props) {
 
@@ -23,11 +26,41 @@ function Header(props) {
 
     const dispatch = useDispatch();
     const { isConnected : connection } = useSelector(state=>state.connection);
+    const products = useSelector(productsSelector.selectAll);
     const { loading } = useSelector(state=>state.settings);
     const history = useHistory();
+    const [searchText,setSearchText] = useState('');
     
     const closeWindow = ()=>{
         ipcRenderer.invoke('close');
+    }
+
+    const productsAutoComplete = ()=>{
+        return [...new Set(products.map(product=>product.item_name))];
+    }
+
+    const PopperCustom = (props)=>{
+        return <Popper {...props} style={{ left : 5,WebkitAppRegion : "no-drag", left : 0 }} />
+    }
+
+    const handleChange = (e)=>{
+        setSearchText(e.target.value);
+    }
+
+    const handleKeyPress = async (e)=>{
+        const filteredString = escapeStringRegexp(searchText);
+        console.log(filteredString);
+        if( e.key === 'Enter' ){
+            const res = await dispatch( searchProduct({
+                opt : {
+                    url : '/search/products?query=' + filteredString
+                }
+            }) );
+
+            if( searchProduct.fulfilled.match(res) ){
+                setSearchText('');
+            }
+        }
     }
   
     const minimizeWindow = ()=>{
@@ -59,8 +92,28 @@ function Header(props) {
                     console.log(printerName);
                 });
 
-                socket.on('print-status',(args)=>{
-                    console.log(args);
+                socket.on('created_product',()=>{
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }));
+                });
+
+                socket.on('updated_product',()=>{
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }));
+                });
+
+                socket.on('deleted_product',()=>{
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }));
                 });
             }
 
@@ -95,7 +148,8 @@ function Header(props) {
             style={{
                 display : "flex !important",
                 flexDirection : 'row',
-                justifyContent : "space-between"
+                justifyContent : "space-between",
+                WebkitAppRegion : "no-drag"
             }}
         >
             <Box
@@ -106,28 +160,32 @@ function Header(props) {
                     display : 'flex'
                 }}
             >
-                <TextField 
-                    size="small"
-                    margin="none"                    
-                    variant="outlined" 
-                    label="Search Product"
-                    inputRef={searchRef}
-                    InputProps={{
-                        startAdornment : (
-                            <InputAdornment position="start">
-                                <FontAwesomeIcon icon={faSearch} />
-                            </InputAdornment>
-                        )
-                    }}
-                    onKeyPress={(e)=>{
-                        if( e.key === 'Enter' ){
-                            dispatch( searchProduct({
-                                opt : {
-                                    url : '/products/search/' + e.target.value
-                                }
-                            }) );
-                        }
-                    }}
+                <Autocomplete                     
+                    style={{ width : "350px" }}
+                    options={productsAutoComplete()}
+                    PopperComponent={PopperCustom}
+                    inputValue={searchText}
+                    onChange={(e,value)=>setSearchText(value)}
+                    size="small"                    
+                    renderInput={(params)=>(
+                        <TextField 
+                            fullWidth      
+                            variant="outlined" 
+                            label="Search Product"
+                            inputRef={searchRef}
+                            value={searchText}
+                            InputProps={{
+                                startAdornment : (
+                                    <InputAdornment position="start">
+                                        <FontAwesomeIcon icon={faSearch} />
+                                    </InputAdornment>
+                                )
+                            }}
+                            onChange={handleChange}
+                            onKeyPress={handleKeyPress}
+                            {...params}
+                        />
+                    )}
                 />    
                 <Divider style={{ margin : "0px 10px"}} variant="fullWidth" orientation="vertical" flexItem />                
                 <Box

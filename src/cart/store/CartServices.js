@@ -32,7 +32,7 @@ export const CreateTransaction = createAsyncThunk(
                     method : 'POST',
                     data : values
                 });
-                await sleep(2000);
+                await sleep(1000);
                 return res.data;             
             }             
         }catch(err){
