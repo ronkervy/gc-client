@@ -18,6 +18,26 @@ const useStyle = {
         outline : "none",
         height : "650px",
         padding : "30px",
+    },
+    ModalCartContent : {
+        borderRadius : '10px',
+        padding : '20px',
+        width : "300px",
+        backgroundColor : "#ffffff",
+        outline : 'none',
+        position : 'relative'
+    },
+    AddQTYModal : {
+        display : "flex",
+        justifyContent : "center",
+        alignItems : "center",
+        WebkitAppRegion : 'no-drag'
+    },
+    AddDiscountModal : {
+        display : "flex",
+        justifyContent : "center",
+        alignItems : "center",
+        WebkitAppRegion : 'no-drag'
     }
 }
 

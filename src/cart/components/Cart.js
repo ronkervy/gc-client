@@ -60,11 +60,10 @@ function Cart(props) {
             <Table size="small" stickyHeader>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell style={{ textAlign : 'center' }}>QTY</TableCell>
+                        <TableCell colSpan={2}>Name</TableCell>    
+                        <TableCell style={{ textAlign : "center" }}>QTY</TableCell>              
                         <TableCell>Total</TableCell>
-                        <TableCell>Discount</TableCell>
-                        <TableCell>Action</TableCell>
+                        <TableCell style={{ textAlign : "center" }}>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

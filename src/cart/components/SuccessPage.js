@@ -51,7 +51,7 @@ function SuccessPage(props) {
             BackdropProps={{
                 timeout : 500,
                 style : {
-                    height : "730px",
+                    height : "700px",
                     borderRadius : "15px"
                 }
             }}

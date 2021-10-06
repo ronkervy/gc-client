@@ -1,6 +1,23 @@
 import { faBuilding, faDollarSign, faMoneyBill, faMoneyBillAlt, faPrint, faSave, faUser, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Backdrop, Fade, Grid, Modal, withStyles, TextField, InputAdornment, ButtonGroup, Button, Typography, MenuItem } from '@material-ui/core'
+import { 
+    Backdrop, 
+    Fade, 
+    Grid, 
+    Modal, 
+    withStyles, 
+    TextField, 
+    InputAdornment, 
+    ButtonGroup, 
+    Button, 
+    Typography, 
+    MenuItem,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio
+} from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router';
 import useStyle from './Styles';
@@ -24,6 +41,7 @@ function Transaction(props) {
     const {state : cart} = useLocation();
     
     const [open,setOpen] = useState(false);
+    const [autoPrint,setAutoPrint] = useState(false);
     const history = useHistory();
     const {TransactionModal,ModalContent} = props.classes;
     const [total,setTotal] = useState(0);
@@ -35,6 +53,10 @@ function Transaction(props) {
         cash_amount : 0,
         transact_status : true
     });
+
+    const handleAutoPrint = (e)=>{
+        setAutoPrint(!autoPrint);
+    }
 
     const handleClose = async (id)=>{
         try{
@@ -65,13 +87,15 @@ function Transaction(props) {
                             const docDef = TransactionDocDef(pdf,logo);
                             const docGenerator = pdfMake.createPdf(docDef);
         
-                            docGenerator.getBase64(data=>{
-                                socket.emit('printcmd',{
-                                    sid : socket.id,
-                                    data,
-                                    id : transact_id,
+                            if( autoPrint ){
+                                docGenerator.getBase64(data=>{
+                                    socket.emit('printcmd',{
+                                        sid : socket.id,
+                                        data,
+                                        id : transact_id,
+                                    });
                                 });
-                            });
+                            }
         
                             docGenerator.getBlob(blob=>{
                                 let url = window.URL.createObjectURL(blob);                                                
@@ -80,7 +104,7 @@ function Transaction(props) {
                         } 
                     }
                 }else{            
-                    await history.goBack();
+                    history.goBack();
                 }  
             }                
             setOpen(false); 
@@ -117,7 +141,7 @@ function Transaction(props) {
                 timeout : 500,
                 style : {
                     borderRadius : '20px',
-                    height : '730px'
+                    height : '700px'
                 }
             }}
             className={TransactionModal}
@@ -279,7 +303,7 @@ function Transaction(props) {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={6} sm={6}>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -301,6 +325,23 @@ function Transaction(props) {
                                 <MenuItem value="partial">Partial Payment</MenuItem>
                             </TextField>
                         </Grid>
+                        <Grid item lg={6} sm={6}>
+                            <FormControl 
+                                size="small" 
+                                component="fieldset" 
+                                variant="outlined"                                
+                            >
+                                <FormLabel component="legend">Auto Print</FormLabel>
+                                <RadioGroup 
+                                    row
+                                    onChange={handleAutoPrint}
+                                    value={autoPrint}                                                                     
+                                >
+                                    <FormControlLabel value={true} control={<Radio size="small" />} label="On" />
+                                    <FormControlLabel value={false} control={<Radio size="small" />} label="Off" />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
                         <Grid 
                             item 
                             lg={12} 
@@ -308,7 +349,7 @@ function Transaction(props) {
                             style={{ 
                                 position : 'absolute', 
                                 bottom : '0',
-                                left : '0'
+                                left : '20'
                             }}
                         >
                             <ButtonGroup

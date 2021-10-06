@@ -13,6 +13,7 @@ import TransactionList from './transactions/components/TransactionList';
 import SuccessPage from './cart/components/SuccessPage';
 import Settings from './settings/components/settings';
 import TransactionDeleteModal from './transactions/components/TransactionDeleteModal';
+import AddQty from './cart/components/AddQty';
 
 function App(props) {
 
@@ -56,6 +57,9 @@ function App(props) {
                 </Route>
                 <Route exact path="/products" >
                     <ProductsList />
+                </Route>
+                <Route exact path="/add-qty" >
+                    <AddQty />
                 </Route>
                 <Route exact path="/transaction">
                     <Transaction />

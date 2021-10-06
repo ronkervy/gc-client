@@ -58,7 +58,7 @@ function ProductsList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(product=>(
+                        {products.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(product=>(                            
                             <ProductItem item={product} />
                         ))}
                     </TableBody>

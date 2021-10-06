@@ -20,36 +20,58 @@ const CartSlice = createSlice({
             const {
                 _id,
                 item_name,
+                discount,
                 item_price,
                 item_qty,
+                inventory_qty,
                 item_unit,
                 item_srp
             } = payload;
 
-            const qty = 1;
-            const discount = 0;
+            const qty = item_qty;
+            const calcDiscount = discount / 100;            
 
             if( index !== -1 ) {
-                state.cart[index].qty = parseInt(state.cart[index].qty) + 1;
-                state.cart[index].total_per_unit = parseInt(state.cart[index].qty) * item_price;
-                state.cart[index].total_per_unit_srp = parseInt(state.cart[index].qty) * item_srp;
+
+                const total_qty_price = (parseInt(state.cart[index].qty) + parseInt(qty)) * item_price;
+                const total_qty_srp = (parseInt(state.cart[index].qty) + parseInt(qty)) * item_srp;
+    
+                const withDiscount_per_unit = state.cart[index].discount !== 0 ? total_qty_price - (total_qty_price * state.cart[index].discount) : total_qty_price;
+                const withDiscount_per_unit_srp = state.cart[index].discount !== 0 ? total_qty_srp - ( total_qty_srp * state.cart[index].discount ) : total_qty_srp;
+
+                state.cart[index].qty = parseInt(state.cart[index].qty) + parseInt(qty);
+                state.cart[index].total_per_unit = withDiscount_per_unit;
+                state.cart[index].total_per_unit_srp = withDiscount_per_unit_srp;
+
+                if( qty > inventory_qty ){
+                    state.cart[index].error = true;                    
+                }
+
             }else{
+
+                const total_qty_price = qty * item_price;
+                const total_qty_srp = qty * item_srp;
+    
+                const withDiscount_per_unit = calcDiscount !== 0 ? total_qty_price - (total_qty_price * calcDiscount) : total_qty_price;
+                const withDiscount_per_unit_srp = calcDiscount !== 0 ? total_qty_srp - ( total_qty_srp * calcDiscount ) : total_qty_srp;
+
                 state.cart.unshift({
                     _id,
                     item_name,
                     item_price,
                     item_srp,
-                    inventory_qty : item_qty,
+                    inventory_qty,
                     error : false,
                     qty,
-                    discount,
-                    total_per_unit : qty * item_price,
-                    total_per_unit_srp : qty * item_srp,
+                    discount : calcDiscount,
+                    total_per_unit : withDiscount_per_unit,
+                    total_per_unit_srp : withDiscount_per_unit_srp,
                     item_unit
                 });
             }
         },
         updateQty : (state,{payload})=>{
+            
             const {
                 _id,
                 qty,
@@ -59,12 +81,15 @@ const CartSlice = createSlice({
             } = payload;            
 
             const index = state.cart.findIndex(prod=>prod._id === _id);
+
             let val = qty === NaN ? 0 : parseInt(qty);
+            let total_qty_price = val * item_price;
+            let total_qty_srp = val * item_srp;
 
             if( index !== -1 ){
-                state.cart[index].qty = val;
-                state.cart[index].total_per_unit = val * item_price;
-                state.cart[index].total_per_unit_srp = val * item_srp;
+                state.cart[index].qty = val; 
+                state.cart[index].total_per_unit = state.cart[index].discount !== 0 ? total_qty_price - ((total_qty_price) * state.cart[index].discount) : total_qty_price;
+                state.cart[index].total_per_unit_srp = state.cart[index].discount !== 0 ? total_qty_srp - ((total_qty_srp) * state.cart[index].discount) : total_qty_srp;
 
                 if( val > inventory_qty ){
                     state.cart[index].error = true;
@@ -82,7 +107,7 @@ const CartSlice = createSlice({
                 item_price,
                 item_srp,
                 qty
-            } = payload;            
+            } = payload;          
 
             const index = state.cart.findIndex(prod=>prod._id === _id);
             const calcDiscount = discount / 100;

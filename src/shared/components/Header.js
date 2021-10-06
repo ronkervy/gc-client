@@ -13,7 +13,7 @@ import { useHistory } from 'react-router';
 import { GetSettings } from '../../settings/store/SettingsServices';
 import { OpenNotification } from '../store/NotificationSlice';
 import Loader from './Loader';
-import { productsSelector } from '../../products/store/productSlice';
+import { clearProducts, productsSelector } from '../../products/store/productSlice';
 import { Autocomplete } from '@material-ui/lab';
 import escapeStringRegexp from 'escape-string-regexp';
 
@@ -36,7 +36,7 @@ function Header(props) {
     }
 
     const productsAutoComplete = ()=>{
-        return [...new Set(products.map(product=>product.item_name))];
+        return [...new Set(products.map(product=>product.item_name !== undefined && product.item_name))];
     }
 
     const PopperCustom = (props)=>{
@@ -82,10 +82,20 @@ function Header(props) {
 
                 socket.on('connect',()=>{
                     dispatch( setConnection(socket.connected) );
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }));
                 });
 
                 socket.on('disconnect',()=>{                    
-                    dispatch( setConnection(socket.connected) );
+                    dispatch( setConnection(socket.connected) );  
+                    dispatch( selectAllProducts({
+                        opt : {
+                            url : '/products'
+                        }
+                    }));                  
                 });
 
                 socket.on('server-printer',(printerName)=>{
@@ -114,6 +124,10 @@ function Header(props) {
                             url : '/products'
                         }
                     }));
+                });
+
+                socket.on("print-status",message=>{
+                    console.log(message);
                 });
             }
 

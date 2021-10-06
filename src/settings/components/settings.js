@@ -52,7 +52,7 @@ function Settings(props) {
             BackdropComponent={Backdrop}
             BackdropProps={{
                 style : {
-                    height : "730px",
+                    height : "700px",
                     borderRadius : "15px"
                 }
             }}

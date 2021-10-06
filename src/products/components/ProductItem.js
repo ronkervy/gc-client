@@ -5,10 +5,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../cart/store/CartSlice';
 import NumberFormat from 'react-number-format';
+import { useHistory } from 'react-router';
  
 function ProductItem({item}) {
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     return (
         <>
@@ -37,7 +39,8 @@ function ProductItem({item}) {
                         color="primary"
                         size="small"
                         onClick={()=>{
-                            dispatch( addItem(item) );
+                            // dispatch( addItem(item) );
+                            history.push('/add-qty',item);
                         }}
                         style={{
                             WebkitAppRegion : 'no-drag',

@@ -84,10 +84,10 @@ export default (docs,logoURL)=>{
 
     return {
         pageSize : {
-            width : 120 * 9.5,
-            height : 120 * 5.5
+            width : 97 * 9.5,
+            height : 97 * 5.5
         },
-        pageMargins: [ 20, 80, 20, 120 ],
+        pageMargins: [ 20, 70, 20, 130 ],
         compress : false,
         header : (currentPage)=>{
             if( currentPage === 1 ){
@@ -95,9 +95,8 @@ export default (docs,logoURL)=>{
                     columns : [
                         {
                             image : `data:image/png;base64,${logoURL}`,
-                            width : 60,
-                            height : 60,
-                            margin : [2,5,0,0]
+                            width : 50,
+                            height : 50,
                         },
                         {
                             stack : [
@@ -107,8 +106,7 @@ export default (docs,logoURL)=>{
                                     style : 'subheader'
                                 }
                             ],
-                            alignment : 'right',
-                            margin : [2,12]      
+                            alignment : 'right',   
                         }   
                     ],
                     margin : [20,8],
@@ -139,7 +137,7 @@ export default (docs,logoURL)=>{
                                                 fontSize : 15,
                                                 font : 'Times'
                                             },
-                                            bold : true
+                                            bold : false
                                         },
                                         {
                                             text : `Amount to pay : ${formatter.format(total_amount)}`,
@@ -147,7 +145,7 @@ export default (docs,logoURL)=>{
                                                 fontSize : 15,
                                                 font : 'Times'
                                             },
-                                            bold : true
+                                            bold : false
                                         }
                                     ],
                                     [ 
@@ -167,7 +165,7 @@ export default (docs,logoURL)=>{
                                                     } 
                                                 }
                                             ],
-                                            bold : true,
+                                            bold : false,
                                             fontSize : 15
                                         }, 
                                         { 
@@ -176,7 +174,7 @@ export default (docs,logoURL)=>{
                                                 font : 'Times',
                                                 fontSize : 15
                                             },
-                                            bold : true
+                                            bold : false
                                         } 
                                     ]
                                 ]                        
@@ -188,7 +186,7 @@ export default (docs,logoURL)=>{
                                 fontSize : 12,        
                                 //color : "#808080"                     
                             },
-                            bold : true,
+                            bold : false,
                             alignment : "center",
                             margin : [0,7,0,0]
                         },
@@ -198,7 +196,7 @@ export default (docs,logoURL)=>{
                                 fontSize : 12,                         
                             },
                             alignment : "right",
-                            bold : true,
+                            bold : false,
                             margin : [0,3,0,0]
                         }
                     ],                    
@@ -232,7 +230,7 @@ export default (docs,logoURL)=>{
                                     {
                                         text : `${customer_name}`,
                                         italics : false,
-                                        bold : true
+                                        bold : false
                                     }
                                 ],       
                                 bold : true,                         
@@ -245,7 +243,7 @@ export default (docs,logoURL)=>{
                                     {
                                         text : `${transaction_date}`,
                                         italics : false,
-                                        bold : true
+                                        bold : false
                                     }
                                 ],
                                 bold : true,
@@ -258,7 +256,13 @@ export default (docs,logoURL)=>{
                     {
                         columns : [                            
                             {
-                                text : `Address : ${customer_address}`,
+                                text : [
+                                    `Address : `,
+                                    {
+                                        text : `${customer_address}`,
+                                        bold : false
+                                    }
+                                ],
                                 bold : true,
                                 fontSize : 15,
                                 margin : [0,5,0,10]
@@ -268,7 +272,8 @@ export default (docs,logoURL)=>{
                                     'Receipt# : ',
                                     {
                                         text : `${_id}`,
-                                        fontSize : 15
+                                        fontSize : 15,
+                                        bold : false
                                     }
                                 ],                         
                                 bold : true,
@@ -390,8 +395,8 @@ export default (docs,logoURL)=>{
         defaultStyle : {
             font : 'Times',
             columnGap : 5,
-            //color : "#808080",
-            fontSize : 12
+            fontSize : 12,
+            color : [70,50,30,100]
         }
     }
 }

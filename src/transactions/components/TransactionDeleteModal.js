@@ -43,7 +43,7 @@ function TransactionDeleteModal(props) {
                 timeout : 500,
                 style : {
                     WebkitAppRegion : "no-drag",
-                    height : "730px",
+                    height : "700px",
                     borderRadius : "15px"
                 }
             }}

@@ -3,15 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { removeItem, updateQty,setDiscount } from '../store/CartSlice'
+import { removeItem, updateQty,setDiscount, cartItems } from '../store/CartSlice'
 import NumberFormat from 'react-number-format';
 import { motion } from 'framer-motion'
+import { useHistory } from 'react-router'
+import { useSelector } from 'react-redux'
 
 function CartItems({item}) {
 
     const dispatch = useDispatch();
     const [total,setTotal] = useState(parseInt(item.item_price) * parseInt(item.qty));
     const [totalSrp,setTotalSrp] = useState(parseInt(item.item_srp) * parseInt(item.qty));
+    const cart = useSelector(cartItems);
+    const history = useHistory();
 
     useEffect(()=>{
         setTotal(parseInt(item.item_price) * parseInt(item.qty));
@@ -26,8 +30,11 @@ function CartItems({item}) {
     return (
         <>
             <TableRow 
+                id={item._id}
+                hover
                 key={item._id}   
-                component={motion.tr}              
+                component={motion.tr}     
+                title={`Name : ${item.item_name}\nQuantity : ${item.qty}\nDiscount : ${item.discount * 100}%`}         
                 initial={{
                     y : -100,
                     opacity : 0
@@ -36,71 +43,28 @@ function CartItems({item}) {
                     y : 0,
                     opacity : 1
                 }}
+                onDoubleClick={()=>{
+                    history.push(`/add-qty?mode=update&discount=${item.discount / 100}`,item);
+                }}
+                style={{ WebkitAppRegion : "no-drag",cursor : "pointer" }}
             >
                 <TableCell
                     style={{fontSize : '10px'}}
-                ><FontAwesomeIcon color="grey" icon={faBoxes} />&nbsp;&nbsp;{item.item_name.substring(0,18) + '...'}</TableCell>
-                <TableCell>
-                    <TextField 
-                        error={ item.error }
-                        variant="outlined"
-                        size="small"
-                        value={item.qty}
-                        onChange={(e)=>{
-                            let val = e.target.value == '' ? 0 : parseInt(e.target.value);                            
-                            dispatch( updateQty({
-                                ...item,
-                                qty : val
-                            }));
-                        }}    
-                        inputProps={{
-                            style : {
-                                textAlign : 'center',
-                                fontSize : '10px'
-                            }
-                        }}
-                        style={{
-                            WebkitAppRegion : 'no-drag'
-                        }}
-                    />
-                </TableCell>
+                    colSpan={2}
+                ><FontAwesomeIcon color="grey" icon={faBoxes} />&nbsp;&nbsp;{item.item_name.substring(0,30) + '...'}</TableCell>                                
+                <TableCell style={{ textAlign : "center" }}>{item.qty}</TableCell>
                 <TableCell>
                     <NumberFormat
                         thousandSeparator 
                         displayType="text"
                         value={totalSrp}
-                        style={{ fontSize : '10px' }}
+                        style={{ fontSize : '10px', textAlign : "center" }}
                         decimalScale={2} 
                         decimalSeparator={'.'}
                         fixedDecimalScale={true}                    
                     />
-                </TableCell>
-                <TableCell>
-                    <TextField 
-                        disabled={item.error}
-                        variant="outlined"
-                        size="small" 
-                        margin="none"
-                        value={item.discount * 100}      
-                        inputProps={{
-                            style : {
-                                textAlign : 'center',
-                                fontSize : '10px',
-                                width : '50px'
-                            }
-                        }}    
-                        onChange={(e)=>{                               
-                            dispatch( setDiscount({
-                                ...item,
-                                discount : e.target.value === '' ? 0 : parseInt(e.target.value)
-                            }));
-                        }}
-                        style={{
-                            WebkitAppRegion : 'no-drag'
-                        }}
-                    />
-                </TableCell>
-                <TableCell>
+                </TableCell>                
+                <TableCell style={{ textAlign : "center" }}>
                     <IconButton
                         color="secondary"
                         size="small"

@@ -1,4 +1,4 @@
-import { faBoxes, faCalendar, faIdCard, faMarker, faMoneyBillWaveAlt, faPrint, faStop, faTrash, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faBoxes, faCalendar, faEye, faIdCard, faMarker, faMoneyBillWaveAlt, faPrint, faStop, faTrash, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Backdrop, Button, ButtonGroup, Fade, Grid, IconButton, InputAdornment, makeStyles, Modal, TextField } from '@material-ui/core'
 import { Close } from '@material-ui/icons';
@@ -88,8 +88,8 @@ const BtnGroupSingleTrans = (props)=>{
             )}
             <Grid 
                 item 
-                lg={8} 
-                sm={8}
+                lg={12} 
+                sm={12}
                 style={{
                     display : "flex",
                     justifyContent : "center",
@@ -131,6 +131,56 @@ const BtnGroupSingleTrans = (props)=>{
                     ) : (
                         <Button size="small" disabled >Paid</Button>
                     )}
+                    <Button
+                        size="small"                                                                                       
+                        style={{
+                            background : "green",                            
+                            color : "white"
+                        }}
+                        onClick={ async()=>{
+                            try{
+                                const resSettings = await dispatch( GetSettings({
+                                    url : '/settings'
+                                }) );
+
+                                if( GetSettings.fulfilled.match(resSettings) ){
+                                    const { settings } = resSettings.payload;
+                                    const host = settings.address !== undefined ? settings.address : "localhost";
+                                    const port = settings.port !== undefined ? settings.port : 8081;
+                                    const socket = io(`http://${host}:${port}`);
+                                    
+                                    const resTrans = await dispatch( CreateTransactionReport({
+                                        url : '/transactions/' + data._id
+                                    }) );
+        
+                                    if( CreateTransactionReport.fulfilled.match(resTrans) ){
+                                        const { doc,logo } = resTrans.payload;
+                                        let pdf = JSON.parse(doc);                                                              
+        
+                                        if( pdf.length > 0 ){
+                                            pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                                            const docDef = TransactionDocDef(pdf,logo);
+                                            const docGenerator = pdfMake.createPdf(docDef);
+        
+                                            docGenerator.getBlob(blob=>{
+                                                const url = window.URL.createObjectURL(blob);                        
+                                                history.push('/transaction/success?pdf=' + url + "&page=transaction");
+                                            });
+                                        }
+                                    }
+                                }
+                                
+                            }catch(err){
+                                dispatch( OpenNotification({
+                                    message : 'Cannot Print Transaction, please try again.',
+                                    severity : 'error'
+                                }) );
+                            }  
+                        }}
+                        startIcon={<FontAwesomeIcon icon={faEye} />}
+                    >
+                        View
+                    </Button>
                     <Button 
                         size="small"                                                                                       
                         color="primary"
@@ -199,7 +249,8 @@ const BtnGroupSingleTrans = (props)=>{
                     <Button   
                         size="small"                                                                                     
                         style={{
-                            background : "orange"
+                            background : "orange",
+                            color : "white"
                         }}
                         onClick={fn}
                         startIcon={<FontAwesomeIcon icon={<Close />} />}
@@ -232,7 +283,7 @@ function TransactionSingle(props) {
             BackdropProps={{
                 timeout : 500,
                 style : {
-                    height : "730px",
+                    height : "700px",
                     borderRadius : "15px"
                 }
             }}
@@ -341,7 +392,7 @@ function TransactionSingle(props) {
                                 size="small"
                                 fullWidth
                                 label={transaction.payment_type == 'partial' ? "Remaining Balance" : "Change Amount"}
-                                value={transaction.change_amount}
+                                value={transaction.change_amount_srp}
                                 variant="outlined"
                                 InputProps={{
                                     style : {
