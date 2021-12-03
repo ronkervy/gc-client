@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Grid, IconButton, InputAdornment, Paper, Popper, TextField, Typography, withStyles } from '@material-ui/core'
+import { Box, Button, Divider, Grid, IconButton, InputAdornment, Paper, TextField, Typography, withStyles } from '@material-ui/core'
 import { Close, Minimize, SettingsRemote } from '@material-ui/icons'
-import React, { useEffect,useState,useRef } from 'react'
+import React, { useEffect,useState } from 'react'
 import useStyles from './Styles';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +13,7 @@ import { useHistory } from 'react-router';
 import { GetSettings } from '../../settings/store/SettingsServices';
 import { OpenNotification } from '../store/NotificationSlice';
 import Loader from './Loader';
-import { clearProducts, productsSelector } from '../../products/store/productSlice';
+import { productsSelector } from '../../products/store/productSlice';
 import { Autocomplete } from '@material-ui/lab';
 import escapeStringRegexp from 'escape-string-regexp';
 
@@ -39,17 +39,12 @@ function Header(props) {
         return [...new Set(products.map(product=>product.item_name !== undefined && product.item_name))];
     }
 
-    const PopperCustom = (props)=>{
-        return <Popper {...props} style={{ left : 5,WebkitAppRegion : "no-drag", left : 0 }} />
-    }
-
     const handleChange = (e)=>{
         setSearchText(e.target.value);
     }
 
     const handleKeyPress = async (e)=>{
         const filteredString = escapeStringRegexp(searchText);
-        console.log(filteredString);
         if( e.key === 'Enter' ){
             const res = await dispatch( searchProduct({
                 opt : {
@@ -82,20 +77,10 @@ function Header(props) {
 
                 socket.on('connect',()=>{
                     dispatch( setConnection(socket.connected) );
-                    dispatch( selectAllProducts({
-                        opt : {
-                            url : '/products'
-                        }
-                    }));
                 });
 
                 socket.on('disconnect',()=>{                    
-                    dispatch( setConnection(socket.connected) );  
-                    dispatch( selectAllProducts({
-                        opt : {
-                            url : '/products'
-                        }
-                    }));                  
+                    dispatch( setConnection(socket.connected) );             
                 });
 
                 socket.on('server-printer',(printerName)=>{
@@ -176,19 +161,25 @@ function Header(props) {
             >
                 <Autocomplete                     
                     style={{ width : "350px" }}
+                    disablePortal
+                    clearOnBlur={true}
                     options={productsAutoComplete()}
-                    PopperComponent={PopperCustom}
-                    inputValue={searchText}
                     onChange={(e,value)=>setSearchText(value)}
-                    size="small"                    
+                    size="small"
+                    PaperComponent={({children})=>(
+                        <Paper style={{ WebkitAppRegion : "no-drag", marginTop : "40px" }}>{children}</Paper>
+                    )}                        
                     renderInput={(params)=>(
                         <TextField 
                             fullWidth      
                             variant="outlined" 
                             label="Search Product"
-                            inputRef={searchRef}
                             value={searchText}
+                            style={{
+                                WebkitRegionApp : "no-drag"
+                            }}
                             InputProps={{
+                                ...params.inputProps,
                                 startAdornment : (
                                     <InputAdornment position="start">
                                         <FontAwesomeIcon icon={faSearch} />

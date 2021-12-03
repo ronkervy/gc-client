@@ -49,12 +49,13 @@ function Cart(props) {
     }
 
     return (
-        <TableContainer 
+        <TableContainer
             component={Paper} 
             elevation={2} 
             style={{
-                minHeight : "550px",
-                position : 'relative'
+                minHeight : "560px",
+                position : 'relative',
+                WebkitAppRegion : "no-drag"
             }}
         >
             <Table size="small" stickyHeader>

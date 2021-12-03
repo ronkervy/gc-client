@@ -1,7 +1,7 @@
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Backdrop, Fade, Grid, Modal,withStyles,TextField, Button, ButtonGroup } from '@material-ui/core';
-import React,{useEffect,useState, useCallback} from 'react';
+import React,{useEffect,useState, useCallback,useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import { addItem, cartItems, setDiscount, updateQty } from '../store/CartSlice';
@@ -14,6 +14,7 @@ const useQuery = ()=>{
 
 function AddQty(props) {
 
+    let valRef = useRef(0);
     const [qty,setQTY] = useState(1);
     const [open,setOpen] = useState(false);
     const [itemDiscount,setItemDiscount] = useState(0);
@@ -46,7 +47,7 @@ function AddQty(props) {
     }
 
     const handleChange = (e)=>{
-        e.target.value === "" ? setQTY(1) : setQTY(e.target.value);
+        setQTY(e.target.value);
     }
 
     const handleSave = ()=>{        
@@ -145,7 +146,8 @@ function AddQty(props) {
                         fullWidth
                         disabled={item.error}
                         variant="outlined"
-                        label="Discount"              
+                        label="Discount"   
+                        ref={valRef}      
                         size="small" 
                         margin="none"
                         value={parseInt(itemDiscount)}      
@@ -167,7 +169,8 @@ function AddQty(props) {
                             error={ err || cartQuantity() >= item.item_qty || mode === "update" && qty > parseInt(item.inventory_qty) ? true : false}
                             helperText={errMessage}
                             fullWidth                            
-                            label="Quantity"
+                            label="Quantity" 
+                            ref={valRef}                           
                             value={parseInt(qty)}
                             onChange={handleChange}
                             variant="outlined"

@@ -33,12 +33,14 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import TransactionDocDef from '../docs/TransactionDocDef';
 import { io } from 'socket.io-client';
 import { GetSettings } from '../../settings/store/SettingsServices';
+import { useCookies } from 'react-cookie';
  
 function Transaction(props) {
 
     const dispatch = useDispatch();
     const loading = useSelector(cartLoading);
     const {state : cart} = useLocation();
+    const [printCookie,setPrintCookie,removePrintCookie] = useCookies(['autoprint']);
     
     const [open,setOpen] = useState(false);
     const [autoPrint,setAutoPrint] = useState(false);
@@ -46,6 +48,7 @@ function Transaction(props) {
     const {TransactionModal,ModalContent} = props.classes;
     const [total,setTotal] = useState(0);
     const [totalSrp,setTotalSrp] = useState(0);
+
     const [info,setInfo] = useState({
         customer_name : '',
         customer_address : '',
@@ -56,9 +59,15 @@ function Transaction(props) {
 
     const handleAutoPrint = (e)=>{
         setAutoPrint(!autoPrint);
+        setPrintCookie('autoprint',!autoPrint);
     }
 
-    const handleClose = async (id)=>{
+    const handleClose = ()=>{
+        history.goBack();            
+        setOpen(false); 
+    }
+
+    const handleTransaction = async(id)=>{
         try{
 
             const resSettings = await dispatch( GetSettings({
@@ -69,6 +78,7 @@ function Transaction(props) {
                 const { settings } = resSettings.payload;
                 const host = settings.address !== undefined ? settings.address : "localhost";
                 const port = settings.port !== undefined ? settings.port : 8081;
+                const phoneNum = settings.number !== undefined ? settings.number : '';
                 const socket = io(`http://${host}:${port}`);
 
                 if( id.payload !== undefined ){
@@ -79,14 +89,14 @@ function Transaction(props) {
                     }) );
             
                     if( CreateTransactionReport.fulfilled.match(resTrans) ){
-                        const { doc,logo } = resTrans.payload;
+                        const { doc } = resTrans.payload;
                         let pdf = JSON.parse(doc);      
         
                         if( pdf.length > 0 ){                    
                             pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                            const docDef = TransactionDocDef(pdf,logo);
+                            const docDef = TransactionDocDef(pdf,phoneNum);
                             const docGenerator = pdfMake.createPdf(docDef);
-        
+
                             if( autoPrint ){
                                 docGenerator.getBase64(data=>{
                                     socket.emit('printcmd',{
@@ -103,27 +113,33 @@ function Transaction(props) {
                             });                    
                         } 
                     }
-                }else{            
-                    history.goBack();
-                }  
+                }
             }                
-            setOpen(false); 
         }catch(err){
             dispatch( OpenNotification({
                 message : 'Transaction Failed, Pls try again.',
                 severity : 'error'
             }) );
-        }     
+        }
     }
 
     useEffect(()=>{
-        setOpen(true);
+        setOpen(true);        
+        
+        if( printCookie.autoprint !== undefined ){
+            let val = printCookie.autoprint == "true" ? true : false;
+            setAutoPrint(val);
+        }else{
+            setAutoPrint(false);
+        }
+
         cart.map(item=>{
             let price = item.total_per_unit;
             let price_srp = item.total_per_unit_srp;
             setTotal( prevVal => prevVal + price)
             setTotalSrp( prevVal => prevVal + price_srp );
-        })
+        });
+
     },[]);
 
     if( loading ){
@@ -137,6 +153,7 @@ function Transaction(props) {
             open={open}
             onClose={handleClose}
             BackdropComponent={Backdrop}
+            closeAfterTransition
             BackdropProps={{
                 timeout : 500,
                 style : {
@@ -226,6 +243,7 @@ function Transaction(props) {
                         <Grid item lg={12} sm={12}>
                             <TextField
                                 fullWidth
+                                autoFocus
                                 size="small"
                                 variant="outlined"
                                 value={info.customer_name}
@@ -358,6 +376,7 @@ function Transaction(props) {
                                 aria-label="contained primary button group"
                             >
                                 <Button 
+                                    id="btnProcess"
                                     fullWidth 
                                     startIcon={<FontAwesomeIcon color="green" icon={faMoneyBillAlt} />}
                                     onClick={ async()=>{                                        
@@ -384,7 +403,8 @@ function Transaction(props) {
                                         }) );
 
                                         if( CreateTransaction.fulfilled.match(resTrans) ){
-                                            handleClose(resTrans);
+                                            handleTransaction(resTrans);
+                                            handleClose();
                                         }else if( CreateTransaction.rejected.match(resTrans) ){
                                             dispatch( OpenNotification({
                                                 message : 'Error : ' + resTrans.payload,

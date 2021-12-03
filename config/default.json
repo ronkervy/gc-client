@@ -4,11 +4,12 @@
     "theme": {
       "darkmode": false
     },
-    "address": "192.168.1.5",
+    "address": "192.168.1.12",
     "printer": {
       "list": [],
       "default": "",
       "options": {}
-    }
+    },
+    "number": "Globe : 09267179609, TM : 09707382700"
   }
 }

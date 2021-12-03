@@ -3,6 +3,7 @@ const server = require('./app/index');
 const exec = require('child_process').exec;
 const config = require('electron-node-config');
 const path = require('path');
+// const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 if (require('electron-squirrel-startup')) return app.quit();
 
@@ -72,12 +73,9 @@ const createWindow = ()=>{
 }
 
 app.whenReady().then(()=>{
-    if( process.env.REACT_APP_MODE === 'development' ){
-        const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
-        installExtension(REDUX_DEVTOOLS)
-        .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.log('An error occurred: ', err));
-    }
+    // installExtension(REDUX_DEVTOOLS)
+    //     .then((name) => console.log(`Added Extension:  ${name}`))
+    //     .catch((err) => console.log('An error occurred: ', err));
     createWindow()
 });
 

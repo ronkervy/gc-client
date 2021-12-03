@@ -147,6 +147,7 @@ const BtnGroupSingleTrans = (props)=>{
                                     const { settings } = resSettings.payload;
                                     const host = settings.address !== undefined ? settings.address : "localhost";
                                     const port = settings.port !== undefined ? settings.port : 8081;
+                                    const phoneNum = settings.number  !== undefined ? settings.number : ""
                                     const socket = io(`http://${host}:${port}`);
                                     
                                     const resTrans = await dispatch( CreateTransactionReport({
@@ -159,7 +160,7 @@ const BtnGroupSingleTrans = (props)=>{
         
                                         if( pdf.length > 0 ){
                                             pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                                            const docDef = TransactionDocDef(pdf,logo);
+                                            const docDef = TransactionDocDef(pdf,phoneNum);
                                             const docGenerator = pdfMake.createPdf(docDef);
         
                                             docGenerator.getBlob(blob=>{
@@ -194,6 +195,7 @@ const BtnGroupSingleTrans = (props)=>{
                                     const { settings } = resSettings.payload;
                                     const host = settings.address !== undefined ? settings.address : "localhost";
                                     const port = settings.port !== undefined ? settings.port : 8081;
+                                    const phoneNum = settings.number  !== undefined ? settings.number : ""
                                     const socket = io(`http://${host}:${port}`);
                                     
                                     const resTrans = await dispatch( CreateTransactionReport({
@@ -206,7 +208,7 @@ const BtnGroupSingleTrans = (props)=>{
         
                                         if( pdf.length > 0 ){
                                             pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                                            const docDef = TransactionDocDef(pdf,logo);
+                                            const docDef = TransactionDocDef(pdf,phoneNum);
                                             const docGenerator = pdfMake.createPdf(docDef);
         
                                             docGenerator.getBase64(data64=>{

@@ -1,7 +1,7 @@
 import { faCog, faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Modal,Backdrop,withStyles, Fade, Grid, TextField, InputAdornment, Button } from '@material-ui/core';
-import { Dns, UsbRounded } from '@material-ui/icons';
+import { Modal,Backdrop,withStyles, Fade, Grid, TextField, InputAdornment, Button, Typography } from '@material-ui/core';
+import { Dns, MobileFriendlySharp, UsbRounded } from '@material-ui/icons';
 import React,{useEffect,useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -17,8 +17,9 @@ function Settings(props) {
     const dispatch = useDispatch();
     const { loading } = useSelector(state=>state.settings);
     const { settings } = useSelector(state=>state.settings.entities);
-    const [ipAdd,setIpAdd] = useState(settings.address);
+    const [ipAdd,setIpAdd] = useState('');
     const [port,setPort] = useState(settings.port);
+    const [phoneNum,setPhoneNum] = useState('');
     const history = useHistory();
     const { classes } = props;
 
@@ -36,6 +37,8 @@ function Settings(props) {
     }
 
     useEffect(()=>{
+        setIpAdd(settings.address);
+        setPhoneNum(settings.number);
         setOpen(true);
     },[]);
 
@@ -50,6 +53,7 @@ function Settings(props) {
             open={open}
             onClose={handleClose}
             BackdropComponent={Backdrop}
+            closeAfterTransition
             BackdropProps={{
                 style : {
                     height : "700px",
@@ -63,6 +67,31 @@ function Settings(props) {
             >
                 <div className={classes.SettingsContent}>
                     <Grid container spacing={2}>
+                        <Grid item lg={12} sm={12}>
+                            <Typography variant="h4">
+                                Options
+                            </Typography>
+                        </Grid>
+                        <Grid item lg={12} sm={12}>
+                            <TextField
+                                value={phoneNum}
+                                variant="outlined"
+                                margin="dense"
+                                fullWidth
+                                label="Mobile / Phone Number"
+                                placeholder="### #### ####"
+                                onChange={(e)=>{
+                                    setPhoneNum(e.target.value);
+                                }}
+                                InputProps={{
+                                    startAdornment : (
+                                        <InputAdornment position="start">
+                                            <MobileFriendlySharp />
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </Grid>
                         <Grid item lg={8} sm={8}>
                             <TextField
                                 value={ipAdd}
@@ -113,7 +142,8 @@ function Settings(props) {
                                         url : "/settings",
                                         data : {
                                             address : ipAdd,
-                                            port : parseInt(port)
+                                            port : parseInt(port),  
+                                            number : phoneNum                                          
                                         }
                                     }));
                                     

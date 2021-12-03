@@ -47,7 +47,7 @@ function ProductsList() {
 
     return (
         <div>
-            <TableContainer component={Paper} style={{ minHeight : "550px", position : 'relative' }}>
+            <TableContainer component={Paper} style={{ minHeight : "550px", position : 'relative', WebkitAppRegion : "no-drag" }}>
                 <Table size="small" stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>

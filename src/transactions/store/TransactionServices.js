@@ -86,7 +86,6 @@ export const createTransaction = createAsyncThunk(
                     method : 'POST',
                     data : values
                 });
-                await sleep(1000);
                 return res.data;            
             }            
         }catch(err){

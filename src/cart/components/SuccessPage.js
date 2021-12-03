@@ -48,6 +48,7 @@ function SuccessPage(props) {
             open={open}
             onClose={handleClose}
             BackdropComponent={Backdrop}
+            closeAfterTransition
             BackdropProps={{
                 timeout : 500,
                 style : {

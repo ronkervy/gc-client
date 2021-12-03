@@ -3,11 +3,14 @@ import NumberFormat from 'react-number-format';
 import React, { useState } from 'react'
 import TransactionSingle from './TransactionSingle';
 import { useHistory } from 'react-router-dom';
+import momentDate from 'moment';
 
 function TransactionItems({transaction}) {
 
     const [open,setOpen] = useState(false);
     const history = useHistory();
+    const moment = require('moment-timezone');
+    moment.tz.setDefault("Asia/Manila");
 
     const handleOpen = ()=>{
         setOpen(true);
@@ -39,7 +42,7 @@ function TransactionItems({transaction}) {
                 style={{
                     textAlign : "center"
                 }}
-            >{transaction.transaction_date.split('T')[0]}</TableCell>
+            >{momentDate(transaction.transaction_date).format("YYYY-MM-DD")}</TableCell>
             <TableCell
                 style={{
                     textAlign : "center"

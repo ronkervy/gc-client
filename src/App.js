@@ -1,5 +1,5 @@
-import React,{useEffect,useRef} from 'react';
-import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
+import React,{useEffect,useRef,useCallback} from 'react';
+import { Switch, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard/Index';
 import ProductsList from './products/components/ProductsList';
 import { Grid, withStyles } from '@material-ui/core';
@@ -14,40 +14,58 @@ import SuccessPage from './cart/components/SuccessPage';
 import Settings from './settings/components/settings';
 import TransactionDeleteModal from './transactions/components/TransactionDeleteModal';
 import AddQty from './cart/components/AddQty';
+import { useSelector } from 'react-redux';
+import { cartItems } from './cart/store/CartSlice';
+import { useHistory } from 'react-router-dom';
+import { OpenNotification } from './shared/store/NotificationSlice';
 
 function App(props) {
 
   const dispatch = useDispatch();
   const { root,ContainerWrap } = props.classes;
+  const history = useHistory();
+  const cart = useSelector(cartItems);
   const searchRef = useRef(null);
+  const moment = require('moment-timezone');
+  
+  moment.tz.setDefault("Asia/Manila");
+
+  const handleEvents = useCallback((e)=>{
+        if( e.ctrlKey && e.code == 'KeyF' ){
+            focusSearch();
+        }
+
+        if( e.ctrlKey && e.code == 'Enter'){
+            if( cart.length <= 0 ){
+                dispatch( OpenNotification({
+                    message : "Cart is Empty.",
+                    severity : "error"
+                }) );
+            }else{
+                history.push('/transaction',cart);
+            }            
+        }
+  },[cart]);
+
   const focusSearch = ()=>{
       searchRef.current.focus();
   }
 
   useEffect(()=>{
 
-      document.addEventListener('keydown',(e)=>{
-          if( e.ctrlKey && e.key == 'f' ){
-              focusSearch();
-          }
-      });
+      document.addEventListener('keypress',handleEvents);
 
       return ()=>{
-        document.removeEventListener('keydown',(e)=>{          
-            if( e.ctrlKey && e.key == 'f' ){
-                focusSearch();
-            }
-        });
+        document.removeEventListener('keypress',handleEvents);
       }      
 
-  },[]);
+  },[handleEvents]);
 
   const handleClose = ()=>{
       dispatch( CloseNotification() );
   }
 
   return (
-    <Router>
     <Grid style={{ WebkitAppRegion : 'drag' }} container dicrection="column" className={root} spacing={3}>
         <Header searchRef={searchRef} />
         <Grid item lg={12} sm={12} className={ContainerWrap}>
@@ -82,7 +100,6 @@ function App(props) {
             />
         </Grid>
     </Grid>
-    </Router>
   );
 }
 

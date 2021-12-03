@@ -35,13 +35,15 @@ const CartSlice = createSlice({
 
                 const total_qty_price = (parseInt(state.cart[index].qty) + parseInt(qty)) * item_price;
                 const total_qty_srp = (parseInt(state.cart[index].qty) + parseInt(qty)) * item_srp;
+                const currentDiscount = discount !== 0 ? discount / 100 : state.cart[index].discount;
     
-                const withDiscount_per_unit = state.cart[index].discount !== 0 ? total_qty_price - (total_qty_price * state.cart[index].discount) : total_qty_price;
-                const withDiscount_per_unit_srp = state.cart[index].discount !== 0 ? total_qty_srp - ( total_qty_srp * state.cart[index].discount ) : total_qty_srp;
+                const withDiscount_per_unit = currentDiscount !== 0 ? total_qty_price - (total_qty_price * currentDiscount) : total_qty_price;
+                const withDiscount_per_unit_srp = currentDiscount !== 0 ? total_qty_srp - ( total_qty_srp * currentDiscount ) : total_qty_srp;
 
                 state.cart[index].qty = parseInt(state.cart[index].qty) + parseInt(qty);
                 state.cart[index].total_per_unit = withDiscount_per_unit;
                 state.cart[index].total_per_unit_srp = withDiscount_per_unit_srp;
+                state.cart[index].discount = discount !== 0 ? discount / 100 : state.cart[index].discount;
 
                 if( qty > inventory_qty ){
                     state.cart[index].error = true;                    

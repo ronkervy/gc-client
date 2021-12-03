@@ -17,17 +17,19 @@ import {
     TablePagination, 
     TableRow, 
     TextField, 
-    Toolbar 
+    Toolbar,
+    MenuItem
 } from '@material-ui/core';
 import { KeyboardDatePicker,MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { Close } from '@material-ui/icons';
+import { Close,Delete } from '@material-ui/icons';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { findTransaction, getAllTransaction } from '../store/TransactionServices';
 import TransactionItems from './TransactionItems';
 import Loader from '../../shared/components/Loader';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme)=>({
     appBar : {
@@ -55,10 +57,12 @@ function TransactionList(props) {
     const { loading } = useSelector(state=>state.transactions);
     
     const [open,setOpen] = useState(false);
+    const [filter,setFilter] = useState([]);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(8);
     const [search,setSearch] = useState('');
+    const [paymentType,setPaymentType] = useState('none');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -68,6 +72,10 @@ function TransactionList(props) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+    
+    const handlePaymentType = (e)=>{
+        setPaymentType(e.target.value);
+    }
 
     const handleClose = ()=>{
         setOpen(false);
@@ -86,13 +94,12 @@ function TransactionList(props) {
     const [selectedDate, setSelectedDate] = useState(new Date(Date.now()).toLocaleDateString());
 
     const handleDateChange = (date) => {
-        setSelectedDate(new Date(date));
-        let selDate = new Date(date);
-        dispatch( findTransaction({
-            opt : {
-                url : `/search/transactions?date=${selDate}`
-            }
-        }) )
+        setSelectedDate(moment(date).format('YYYY-MM-DD'));
+        let selDate = moment(date).format('YYYY-MM-DD');
+
+        const selTrans = transactions.filter(transaction=>moment(transaction.transaction_date).format("YYYY-MM-DD") == selDate);
+        
+        setFilter(selTrans);
     };
 
     if( loading ){
@@ -140,7 +147,7 @@ function TransactionList(props) {
                             )
                         }}
                         style={{
-                            flexBasis : "220px",
+                            flexBasis : "190px",
                             flex : 2,
                             marginRight : "10px"
                         }}
@@ -157,9 +164,25 @@ function TransactionList(props) {
                             }
                         }}
                     />
+                    <TextField
+                        select
+                        size="small"
+                        variant="outlined"
+                        label="Payment Type"
+                        value={paymentType}
+                        onChange={handlePaymentType}
+                        style={{
+                            flexBasis : "190px",
+                            marginRight : "10px"
+                        }}
+                    >
+                        <MenuItem key={0} value="none">None</MenuItem>
+                        <MenuItem key={1} value="full">Full</MenuItem>
+                        <MenuItem key={2} value="partial">Partial</MenuItem>
+                    </TextField>
                     <KeyboardDatePicker
                         disableToolbar
-                        variant="inline"
+                        variant="dialog"
                         format="yyyy-dd-MM"
                         size="small"
                         margin="dense"
@@ -175,6 +198,15 @@ function TransactionList(props) {
                             flex : 1
                         }}
                     />
+                    <IconButton
+                        size="small"
+                        onClick={()=>{
+                            setFilter([]);
+                            setPaymentType("none");
+                        }}
+                    >
+                        <Delete color="primary" />
+                    </IconButton>
                     <IconButton focusRipple={false} style={{ margin : "0px 8px" }} size="small" onClick={handleClose}>
                         <Close color="secondary" />
                     </IconButton>                    
@@ -186,7 +218,7 @@ function TransactionList(props) {
                         component={Paper}
                         elevation={2}
                         style={{
-                            minHeight : "500px",
+                            minHeight : "550px",
                             position : "relative"
                         }}
                     >
@@ -206,7 +238,7 @@ function TransactionList(props) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {transactions.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(entry=>(
+                                {(paymentType != 'none' ? (filter.length > 0 ? filter : transactions).filter(transaction=>transaction.payment_type == paymentType) : (filter.length > 0 ? filter : transactions) ).slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(entry=>(
                                     <TransactionItems transaction={entry} />
                                 ))}
                                 <TableRow style={{ position : "absolute", bottom : 0, right : 0 }} >

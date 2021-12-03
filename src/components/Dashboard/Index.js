@@ -5,10 +5,9 @@ import Cart from '../../cart/components/Cart';
 import ProductsList from '../../products/components/ProductsList';
 import Styles from './Styles';
 
-
 function Dashboard(props) {
 
-    const { ContentBlock,Dashboard,infoBlock } = props.classes;
+    const { ContentBlock,Dashboard } = props.classes;
     const history = useHistory();
 
     return (
